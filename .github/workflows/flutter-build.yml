@@ -463,7 +463,7 @@ jobs:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
     # Temporarily disable this action due to additional test is needed.
-    if: false
+    # if: false
     strategy:
       fail-fast: false
       matrix:
@@ -471,10 +471,10 @@ jobs:
           # - { target: i686-pc-windows-msvc        , os: windows-2022                  }
           # - { target: x86_64-pc-windows-gnu       , os: windows-2022                  }
           - {
-              target: i686-pc-windows-msvc,
+              target: x86_64-pc-windows-msvc,
               os: windows-2022,
-              arch: x86,
-              vcpkg-triplet: x86-windows-static,
+              arch: x64,
+              vcpkg-triplet: x64-windows-static,
             }
           # - { target: aarch64-pc-windows-msvc, os: windows-2022 }
     steps:
