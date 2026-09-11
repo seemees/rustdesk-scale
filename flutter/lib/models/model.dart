@@ -2725,6 +2725,7 @@ class CanvasModel with ChangeNotifier {
     notifyListeners();
   }
 
+  /*
   // mobile only
   updateScale(double v, Offset focalPoint) {
     if (parent.target?.imageModel.image == null) return;
@@ -2746,6 +2747,55 @@ class CanvasModel with ChangeNotifier {
     }
     notifyListeners();
   }
+  */
+
+  //++++
+  // mobile and desktop zoom handler
+  updateScale(double v, Offset focalPoint) {
+    if (parent.target?.imageModel.image == null) return;
+    final s = _scale;
+    _scale *= v;
+    final maxs = parent.target?.imageModel.maxScale ?? 1;
+    final mins = parent.target?.imageModel.minScale ?? 1;
+    if (_scale > maxs) _scale = maxs;
+    if (_scale < mins) _scale = mins;
+    
+    // calculate shift from mouse cursor
+    _x = focalPoint.dx - (focalPoint.dx - _x) / s * _scale;
+    final adjust = getAdjustY();
+    _y = focalPoint.dy - adjust - (focalPoint.dy - _y - adjust) / s * _scale;
+
+    // --- PROTECT from exit from bounds (CLAMP) ---
+    // Get window size and frame size
+    final double displayWidth = getDisplayWidth();
+    final double displayHeight = getDisplayHeight();
+    final double viewWidth = (parent.target?.imageModel.image?.width ?? 0) * _scale;
+    final double viewHeight = (parent.target?.imageModel.image?.height ?? 0) * _scale;
+
+    // ќграничиваем X: если картинка больше окна, не даем вылезать кра€м. ≈сли меньше - центрируем.
+    // Clamp X: if frame bigger than window
+    if (viewWidth > displayWidth) {
+      _x = _x.clamp(displayWidth - viewWidth, 0.0);
+    } else {
+      _x = (displayWidth - viewWidth) / 2;
+    }
+
+    // ќграничиваем Y: учитываем смещение adjust
+    // Clamp Y: if frame bigger than window
+    if (viewHeight > displayHeight) {
+      _y = _y.clamp(displayHeight - viewHeight, 0.0);
+    } else {
+      _y = (displayHeight - viewHeight) / 2;
+    }
+    // -------------------------------------------
+
+    if (isMobile) {
+      isMobileCanvasChanged = true;
+    }
+    notifyListeners();
+  }
+  //----
+
 
   // For reset canvas to the last view style
   reset() {
