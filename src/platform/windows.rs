@@ -1926,10 +1926,8 @@ pub fn add_recent_document(path: &str) {
 pub fn is_installed() -> bool {
     /*
     //+++++++
-    //Было
     let (_, _, _, exe) = get_install_info();
     std::fs::metadata(exe).is_ok()
-    //Стало
     */
     false
     /*
@@ -2370,7 +2368,6 @@ pub fn run_background(exe: &str, arg: &str) -> ResultType<bool> {
 pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
     /*
     //+++++++
-    //Было
     let wop = wide_string("runas");
     let wexe = wide_string(exe);
     let warg;
@@ -2390,7 +2387,6 @@ pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
         );
         return Ok(ret as i32 > 32);
     }
-    //Стало
     */
     return Ok(false);
     /*
@@ -4185,14 +4181,12 @@ pub fn is_self_service_running() -> bool {
 
 /*
 //+++++++
-//Было
 pub fn is_service_running(service_name: &str) -> bool {
     unsafe {
         let service_name = wide_string(service_name);
         is_service_running_w(service_name.as_ptr() as _)
     }
 }
-//Стало
 */
 
 pub fn is_service_running(service_name: &str) -> bool {
