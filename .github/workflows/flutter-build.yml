@@ -466,7 +466,7 @@ jobs:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
     # Temporarily disable this action due to additional test is needed.
-    if: false
+    # if: false
     strategy:
       fail-fast: false
       matrix:
@@ -618,6 +618,9 @@ jobs:
     name: build rustdesk ios ipa
     runs-on: ${{ matrix.job.os }}
     needs: [generate-bridge]
+    # ++++
+    if: false
+    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -739,6 +742,9 @@ jobs:
     name: ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.os }}
     needs: [generate-bridge]
+    # ++++
+    if: false
+    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -1024,6 +1030,9 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk android apk ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.os }}
+    # ++++
+    if: false
+    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -1502,6 +1511,9 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk linux ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.on }}
+    # ++++
+    if: false
+    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -2115,6 +2127,9 @@ jobs:
     if: ${{ inputs.upload-artifact }}
     runs-on: ${{ matrix.job.on }}
     name: build-rustdesk-linux-sciter ${{ matrix.job.target }}
+    # ++++
+    if: false
+    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -2410,7 +2425,10 @@ jobs:
       - build-rustdesk-linux
       - build-rustdesk-linux-sciter
     runs-on: ${{ matrix.job.on }}
-    if: ${{ inputs.upload-artifact }}
+    # if: ${{ inputs.upload-artifact }}
+    # ++++
+    if: false
+    # ----
     strategy:
       fail-fast: false
       matrix:
