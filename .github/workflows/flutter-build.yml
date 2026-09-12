@@ -218,7 +218,7 @@ jobs:
         env:
           VCPKG_DEFAULT_HOST_TRIPLET: ${{ matrix.job.vcpkg-triplet }}
         run: |
-          git -C "$VCPKG_ROOT" pull
+          git -C "$VCPKG_ROOT" fetch origin master && git -C "$VCPKG_ROOT" reset --hard origin/master
           if ! $VCPKG_ROOT/vcpkg \
             install \
             --triplet ${{ matrix.job.vcpkg-triplet }} \
