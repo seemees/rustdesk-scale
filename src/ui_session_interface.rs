@@ -1238,6 +1238,16 @@ impl<T: InvokeUiSession> Session<T> {
         // #[cfg(not(any(target_os = "android", target_os = "ios")))]
         let (alt, ctrl, shift, command) =
             keyboard::client::get_modifiers_state(alt, ctrl, shift, command);
+        // ++++
+        let is_enabled_controls = true;
+        if (event_type == MOUSE_TYPE_WHEEL || event_type == MOUSE_TYPE_TRACKPAD) && ctrl {
+            if is_enabled_controls {
+                log::info!("RUSTDESK_DEBUG SM: send_mouse Blocked remote wheel event. Ctrl is pressed.");
+                return;
+            }
+        }
+        // ---
+
         let is_left = (mask & (MOUSE_BUTTON_LEFT << 3)) > 0;
         let is_right = (mask & (MOUSE_BUTTON_RIGHT << 3)) > 0;
         if is_left ^ is_right {
