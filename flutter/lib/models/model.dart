@@ -2772,7 +2772,6 @@ class CanvasModel with ChangeNotifier {
     final double viewWidth = (parent.target?.imageModel.image?.width ?? 0) * _scale;
     final double viewHeight = (parent.target?.imageModel.image?.height ?? 0) * _scale;
 
-    // ќграничиваем X: если картинка больше окна, не даем вылезать кра€м. ≈сли меньше - центрируем.
     // Clamp X: if frame bigger than window
     if (viewWidth > displayWidth) {
       _x = _x.clamp(displayWidth - viewWidth, 0.0);
@@ -2780,7 +2779,6 @@ class CanvasModel with ChangeNotifier {
       _x = (displayWidth - viewWidth) / 2;
     }
 
-    // ќграничиваем Y: учитываем смещение adjust
     // Clamp Y: if frame bigger than window
     if (viewHeight > displayHeight) {
       _y = _y.clamp(displayHeight - viewHeight, 0.0);
