@@ -2760,32 +2760,28 @@ class CanvasModel with ChangeNotifier {
     if (_scale > maxs) _scale = maxs;
     if (_scale < mins) _scale = mins;
     
-    // calculate shift from mouse cursor
     _x = focalPoint.dx - (focalPoint.dx - _x) / s * _scale;
     final adjust = getAdjustY();
     _y = focalPoint.dy - adjust - (focalPoint.dy - _y - adjust) / s * _scale;
 
     // --- PROTECT from exit from bounds (CLAMP) ---
-    // Get window size and frame size
     final double displayWidth = getDisplayWidth().toDouble();
     final double displayHeight = getDisplayHeight().toDouble();
     final double viewWidth = (parent.target?.imageModel.image?.width ?? 0.0) * _scale;
     final double viewHeight = (parent.target?.imageModel.image?.height ?? 0.0) * _scale;
 
-    // Clamp X: if frame bigger than window
     if (viewWidth > displayWidth) {
       _x = _x.clamp(displayWidth - viewWidth, 0.0);
     } else {
-      _x = (displayWidth - viewWidth) / 2;
+      _x = (displayWidth - viewWidth) / 2.0;
     }
 
-    // Clamp Y: if frame bigger than window
-    if (viewHeight > displayHeight) {
-      _y = _y.clamp(displayHeight - viewHeight, 0.0);
+    if (viewHeight > displayHeight - adjust) {
+      _x = _x;
+      _y = _y.clamp(displayHeight - viewHeight, adjust);
     } else {
-      _y = (displayHeight - viewHeight) / 2;
+      _y = adjust + (displayHeight - adjust - viewHeight) / 2.0;
     }
-    // -------------------------------------------
 
     if (isMobile) {
       isMobileCanvasChanged = true;
@@ -3649,11 +3645,9 @@ class QualityMonitorModel with ChangeNotifier {
   bool get show => _show;
   QualityMonitorData get data => _data;
 
-  // Only a WebRTC session on the web names its transport here: web has no
-  // session tab to show it on (the desktop tab's tooltip already does), and
-  // WebRTC is the one path that can be direct or TURN.
+  // Only a WebRTC session names its transport here: web has no session tab
+  // to show it on, and WebRTC is the one path that can be direct or TURN.
   String? get webrtcTransport {
-    if (!isWeb) return null;
     final ffiModel = parent.target?.ffiModel;
     if (ffiModel == null) return null;
     final streamType = ffiModel.cachedPeerData.streamType;
