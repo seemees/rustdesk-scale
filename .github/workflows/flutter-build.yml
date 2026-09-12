@@ -466,7 +466,7 @@ jobs:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
     # Temporarily disable this action due to additional test is needed.
-    # if: false
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -614,10 +614,7 @@ jobs:
             ./SignOutput/rustdesk-*.exe
 
   build-rustdesk-ios:
-    # if: ${{ inputs.upload-artifact }}
-    # ++++
-    if: false
-    # ----
+    if: ${{ inputs.upload-artifact }}
     name: build rustdesk ios ipa
     runs-on: ${{ matrix.job.os }}
     needs: [generate-bridge]
@@ -742,9 +739,6 @@ jobs:
     name: ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.os }}
     needs: [generate-bridge]
-    # ++++
-    if: false
-    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -1030,9 +1024,6 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk android apk ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.os }}
-    # ++++
-    if: false
-    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -1511,9 +1502,6 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk linux ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.on }}
-    # ++++
-    if: false
-    # ----
     strategy:
       fail-fast: false
       matrix:
@@ -2124,10 +2112,7 @@ jobs:
           path: ${{ env.DRM_DEB }}
 
   build-rustdesk-linux-sciter:
-    # if: ${{ inputs.upload-artifact }}
-    # ++++
-    if: false
-    # ----
+    if: ${{ inputs.upload-artifact }}
     runs-on: ${{ matrix.job.on }}
     name: build-rustdesk-linux-sciter ${{ matrix.job.target }}
     strategy:
@@ -2425,10 +2410,7 @@ jobs:
       - build-rustdesk-linux
       - build-rustdesk-linux-sciter
     runs-on: ${{ matrix.job.on }}
-    # if: ${{ inputs.upload-artifact }}
-    # ++++
-    if: false
-    # ----
+    if: ${{ inputs.upload-artifact }}
     strategy:
       fail-fast: false
       matrix:
