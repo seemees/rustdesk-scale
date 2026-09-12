@@ -1659,12 +1659,24 @@ class InputModel {
     if (isViewOnly) return;
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
-      if (HardwareKeyboard.instance.isControlPressed) {
+      bool enabledOpt = true;
+      if (enabledOpt && HardwareKeyboard.instance.isControlPressed) {
         final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
 
         debugPrint("RUSTDESK_DEBUG: Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition}");
         
-        bind.sessionSendKeyboard(sessionId: sessionId, msg: '{"type": "keyup", "key": "Control"}');
+        for (final ctrlKey in ['Control_L']) {
+          bind.sessionInputKey(
+            sessionId: sessionId,
+            name: ctrlKey,
+            down: false,
+            press: false,
+            alt: false,
+            ctrl: false,
+            shift: false,
+            command: false,
+          );
+        }
         
         parent.target?.canvasModel.updateScale(scaleFactor, e.localPosition);
         
