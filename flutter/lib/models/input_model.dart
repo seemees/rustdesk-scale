@@ -1099,6 +1099,9 @@ class InputModel {
   /// Send scroll event with scroll distance [y].
   Future<void> scroll(int y) async {
     if (isViewCamera) return;
+    /// ++++
+    debugPrint("RUSTDESK_DEBUG SCR: Scroll. Scale: $y");
+    /// ----
     await bind.sessionSendMouse(
         sessionId: sessionId,
         msg: json
@@ -1123,6 +1126,9 @@ class InputModel {
   /// Used for side button releases that must go through even if permissions
   /// changed after the matching down was sent.
   Future<void> _sendMouseUnchecked(String type, MouseButtons button) async {
+    /// ++++
+    debugPrint("RUSTDESK_DEBUG SMU: _sendMouseUnchecked on enter");
+    /// ----
     await bind.sessionSendMouse(
         sessionId: sessionId,
         msg: json.encode(modify({'type': type, 'buttons': button.value})));
@@ -1329,6 +1335,9 @@ class InputModel {
   void onPointerPanZoomUpdate(PointerPanZoomUpdateEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
+    /// ++++
+    debugPrint("RUSTDESK_DEBUG PZU: onPointerPanZoomUpdate on enter");
+    /// ----
 
     if (HardwareKeyboard.instance.isControlPressed) {
       if (e.panDelta.dy != 0) {
@@ -1415,6 +1424,10 @@ class InputModel {
 
   void _scheduleFling(double x, double y, int delay) {
     if (isViewCamera) return;
+    /// ++++
+    debugPrint("RUSTDESK_DEBUG SF: _scheduleFling on enter");
+    /// ----
+
     if ((x == 0 && y == 0) || _stopFling) {
       _fling = false;
       return;
@@ -1674,6 +1687,9 @@ class InputModel {
   void onPointerSignalImage(PointerSignalEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
+    /// ++++
+    debugPrint("RUSTDESK_DEBUG PSE: onPointerSignalImage on enter");
+    /// ----
     if (e is PointerScrollEvent) {
       bool enabledOpt = true;
       if (enabledOpt && HardwareKeyboard.instance.isControlPressed) {
@@ -1933,6 +1949,10 @@ class InputModel {
     bool moveCanvas = true,
     bool edgeScroll = false,
   }) {
+    /// ++++
+    debugPrint("RUSTDESK_DEBUG HM: handleMouse on enter");
+    /// ----
+
     final evtToPeer = processEventToPeer(evt, offset,
         onExit: onExit, moveCanvas: moveCanvas, edgeScroll: edgeScroll);
     if (evtToPeer != null) {
