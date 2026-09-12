@@ -59,9 +59,9 @@ env:
   # To make a custom build with your own servers set the below secret values
   RS_PUB_KEY: "PJBOO4lI7TP4NmQe7CdYmFuRngHxr6DLI1NVhTjMU4w="
   RENDEZVOUS_SERVER: "171.22.129.136"
-  RUSTFLAGS: "-C target-feature=+avx2 --cfg curve25519_dalek_backend=\"serial\""
-  LIBCLANG_PATH: "C:\\Program Files\\LLVM\\bin"
-  BINDGEN_EXTRA_CLANG_ARGS: "--target=x86_64-pc-windows-msvc"
+  # RUSTFLAGS: "-C target-feature=+avx2 --cfg curve25519_dalek_backend=\"serial\""
+  # LIBCLANG_PATH: "C:\\Program Files\\LLVM\\bin"
+  # BINDGEN_EXTRA_CLANG_ARGS: "--target=x86_64-pc-windows-msvc"
 jobs:
   generate-sbom:
     runs-on: ubuntu-latest
