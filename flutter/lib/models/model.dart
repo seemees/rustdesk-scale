@@ -2769,8 +2769,8 @@ class CanvasModel with ChangeNotifier {
     // Get window size and frame size
     final double displayWidth = getDisplayWidth();
     final double displayHeight = getDisplayHeight();
-    final double viewWidth = (parent.target?.imageModel.image?.width ?? 0) * _scale;
-    final double viewHeight = (parent.target?.imageModel.image?.height ?? 0) * _scale;
+    final double viewWidth = (parent.target?.imageModel.image?.width ?? 0.0) * _scale;
+    final double viewHeight = (parent.target?.imageModel.image?.height ?? 0.0) * _scale;
 
     // Clamp X: if frame bigger than window
     if (viewWidth > displayWidth) {
