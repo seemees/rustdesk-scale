@@ -1654,10 +1654,19 @@ class InputModel {
   /// This is because scroll events don't need relative positioning - they represent
   /// scroll deltas that are independent of cursor position. Games and 3D applications
   /// handle scroll events the same way regardless of mouse mode.
+  //++++
   void onPointerSignalImage(PointerSignalEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
+      if (HardwareKeyboard.instance.isControlPressed) {
+        final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
+        
+        ffi.canvasModel.updateScale(scaleFactor, e.localPosition);
+        
+        return;
+      }
+
       final rawDx = e.scrollDelta.dx;
       final rawDy = e.scrollDelta.dy;
       final dominantDelta = rawDx.abs() > rawDy.abs() ? rawDx.abs() : rawDy.abs();
@@ -1702,6 +1711,7 @@ class InputModel {
           msg: '{"type": "wheel", "x": "$dx", "y": "$dy"}');
     }
   }
+  //----
 
   void refreshMousePos() => handleMouse({
         'buttons': 0,
@@ -1787,11 +1797,6 @@ class InputModel {
   }
 
   bool _checkPeerControlProtected(double x, double y) {
-    if (isViewOnly && showMyCursor) {
-      lastMousePos = ui.Offset(x, y);
-      return false;
-    }
-
     final cursorModel = parent.target!.cursorModel;
     if (cursorModel.isPeerControlProtected) {
       lastMousePos = ui.Offset(x, y);
