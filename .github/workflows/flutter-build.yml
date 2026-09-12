@@ -60,7 +60,8 @@ env:
   RS_PUB_KEY: "PJBOO4lI7TP4NmQe7CdYmFuRngHxr6DLI1NVhTjMU4w="
   RENDEZVOUS_SERVER: "171.22.129.136"
   RUSTFLAGS: "-C target-feature=+avx2 --cfg curve25519_dalek_backend=\"serial\""
-
+  LIBCLANG_PATH: "C:\\Program Files\\LLVM\\bin"
+  BINDGEN_EXTRA_CLANG_ARGS: "--target=x86_64-pc-windows-msvc"
 jobs:
   generate-sbom:
     runs-on: ubuntu-latest
@@ -454,6 +455,7 @@ jobs:
 
   # The fallback for the flutter version, we use Sciter for 32bit Windows.
   build-for-windows-sciter:
+    if: false
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
     # Temporarily disable this action due to additional test is needed.
@@ -538,7 +540,7 @@ jobs:
           cargo build --locked --features inline,vram,hwcodec --release --bins
           mkdir -p ./Release
           mv ./target/release/rustdesk.exe ./Release/rustdesk.exe
-          curl -LJ -o ./Release/sciter.dll https://github.com/c-smile/sciter-sdk/raw/master/bin.win/x32/sciter.dll
+          curl -LJ -o ./Release/sciter.dll https://github.com/c-smile/sciter-sdk/raw/master/bin.win/x64/sciter.dll
           echo "output_folder=./Release" >> $GITHUB_OUTPUT
           curl -LJ -o ./usbmmidd_v2.zip https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip
           unzip usbmmidd_v2.zip
