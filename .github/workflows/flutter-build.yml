@@ -614,13 +614,13 @@ jobs:
             ./SignOutput/rustdesk-*.exe
 
   build-rustdesk-ios:
-    if: ${{ inputs.upload-artifact }}
-    name: build rustdesk ios ipa
-    runs-on: ${{ matrix.job.os }}
-    needs: [generate-bridge]
+    # if: ${{ inputs.upload-artifact }}
     # ++++
     if: false
     # ----
+    name: build rustdesk ios ipa
+    runs-on: ${{ matrix.job.os }}
+    needs: [generate-bridge]
     strategy:
       fail-fast: false
       matrix:
@@ -2124,12 +2124,12 @@ jobs:
           path: ${{ env.DRM_DEB }}
 
   build-rustdesk-linux-sciter:
-    if: ${{ inputs.upload-artifact }}
-    runs-on: ${{ matrix.job.on }}
-    name: build-rustdesk-linux-sciter ${{ matrix.job.target }}
+    # if: ${{ inputs.upload-artifact }}
     # ++++
     if: false
     # ----
+    runs-on: ${{ matrix.job.on }}
+    name: build-rustdesk-linux-sciter ${{ matrix.job.target }}
     strategy:
       fail-fast: false
       matrix:
