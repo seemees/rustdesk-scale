@@ -2767,8 +2767,8 @@ class CanvasModel with ChangeNotifier {
 
     // --- PROTECT from exit from bounds (CLAMP) ---
     // Get window size and frame size
-    final double displayWidth = getDisplayWidth();
-    final double displayHeight = getDisplayHeight();
+    final double displayWidth = getDisplayWidth().toDouble();
+    final double displayHeight = getDisplayHeight().toDouble();
     final double viewWidth = (parent.target?.imageModel.image?.width ?? 0.0) * _scale;
     final double viewHeight = (parent.target?.imageModel.image?.height ?? 0.0) * _scale;
 
