@@ -1325,10 +1325,25 @@ class InputModel {
   }
 
   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures
+  //++++
   void onPointerPanZoomUpdate(PointerPanZoomUpdateEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
-    if (peerPlatform != kPeerPlatformAndroid) {
+
+    if (HardwareKeyboard.instance.isControlPressed) {
+      if (e.panDelta.dy != 0) {
+        final double scaleFactor = e.panDelta.dy > 0 ? 1.1 : 0.9;
+        debugPrint("RUSTDESK_DEBUG PZU: PanZoom Zoom Active. Scale: $scaleFactor");
+        
+        for (final ctrlKey in ['Control_L', 'Control_R']) {
+          bind.sessionInputKey(
+            sessionId: sessionId, name: ctrlKey, down: false, press: false,
+            alt: false, ctrl: false, shift: false, command: false,
+          );
+        }
+        parent.target?.canvasModel.updateScale(scaleFactor, e.localPosition);
+        return;
+      }
       final scale = ((e.scale - _lastScale) * 1000).toInt();
       _lastScale = e.scale;
 
@@ -1378,6 +1393,7 @@ class InputModel {
       }
     }
   }
+  //----
 
   Offset _filterTrackpadDeltaAxis(Offset delta) {
     final absDx = delta.dx.abs();
@@ -1663,7 +1679,7 @@ class InputModel {
       if (enabledOpt && HardwareKeyboard.instance.isControlPressed) {
         final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
 
-        debugPrint("RUSTDESK_DEBUG: Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition}");
+        debugPrint("RUSTDESK_DEBUG PSE: Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition}");
         
         for (final ctrlKey in ['Control_L']) {
           bind.sessionInputKey(
