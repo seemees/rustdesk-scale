@@ -1660,10 +1660,10 @@ class InputModel {
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
       if (HardwareKeyboard.instance.isControlPressed) {
-        final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
+        final double 	scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
         
-        ffi.canvasModel.updateScale(scaleFactor, e.localPosition);
-        
+        ///ffi.canvasModel.updateScale(scaleFactor, e.localPosition);
+        parent.target?.canvasModel.updateScale(scaleFactor, e.localPosition);
         return;
       }
 
