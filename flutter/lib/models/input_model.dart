@@ -1660,12 +1660,17 @@ class InputModel {
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
       if (HardwareKeyboard.instance.isControlPressed) {
-        final double 	scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
+        final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
+
+        debugPrint("RUSTDESK_DEBUG: Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition}");
         
-        ///ffi.canvasModel.updateScale(scaleFactor, e.localPosition);
+        bind.sessionSendKeyboard(sessionId: sessionId, msg: '{"type": "keyup", "key": "Control"}');
+        
         parent.target?.canvasModel.updateScale(scaleFactor, e.localPosition);
+        
         return;
       }
+
 
       final rawDx = e.scrollDelta.dx;
       final rawDy = e.scrollDelta.dy;
