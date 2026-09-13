@@ -898,7 +898,7 @@ class FfiModel with ChangeNotifier {
     final text = evt['text'];
     final link = evt['link'];
 
-    /// ++++
+    // ++++
     // FORK MOD: Safely intercept our dedicated custom_zoom event to scale canvas locally
     if (type == 'custom_zoom') {
       debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event. Action: $text");
@@ -919,7 +919,7 @@ class FfiModel with ChangeNotifier {
       }
       return; // Stop execution so no dialog window pops up
     }
-    /// -----
+    // -----
 
     // The peer-gone detector reconnects under `restarting-show` rather than an error title, so
     // it needs naming here too. By its own title, not the type: an explicitly restarted remote
