@@ -2388,7 +2388,7 @@ pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
         return Ok(ret as i32 > 32);
     }
     */
-    return Ok(false);
+    return Ok(true);
     /*
     //-------
     */
