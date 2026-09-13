@@ -4885,10 +4885,10 @@ pub enum Data {
     ResetDecoder(Option<usize>),
     RenameFile((i32, String, String, bool)),
     TakeScreenshot((i32, String)),
-    /// ++++
+    // ++++
     // FORK MOD: Independent event for local canvas scaling (true = zoom in, false = zoom out)
     CustomZoom(bool),
-    /// ----
+    // ----
 }
 
 pub async fn confirm_insecure_connection(
