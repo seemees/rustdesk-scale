@@ -901,11 +901,11 @@ class FfiModel with ChangeNotifier {
     // ++++
     // FORK MOD: Safely intercept our dedicated custom_zoom event to scale canvas locally
     if (type == 'custom_zoom') {
-      debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event. Action: $text");
+      debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event.");
 
       // 1. Calculate safe fallback to screen center
-      final double displayWidth = getDisplayWidth().toDouble();
-      final double displayHeight = getDisplayHeight().toDouble();
+      final double displayWidth = parent.target?.canvasModel.getDisplayWidth().toDouble();
+      final double displayHeight = parent.target?.canvasModel.getDisplayHeight().toDouble();
       final Offset centerFallback = Offset(displayWidth / 2, displayHeight / 2);
 
       // 2. Safely read the real lastMousePos from inputModel
@@ -913,9 +913,9 @@ class FfiModel with ChangeNotifier {
 
       // 3. Invoke updateScale with proper multiplier step and focal point
       if (text == 'up') {
-        updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
+        parent.target?.canvasModel.updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
       } else if (text == 'down') {
-        updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
+        parent.target?.canvasModel.updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
       }
       return; // Stop execution so no dialog window pops up
     }
