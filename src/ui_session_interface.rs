@@ -1238,16 +1238,6 @@ impl<T: InvokeUiSession> Session<T> {
         // #[cfg(not(any(target_os = "android", target_os = "ios")))]
         let (alt, ctrl, shift, command) =
             keyboard::client::get_modifiers_state(alt, ctrl, shift, command);
-        // ++++
-        let is_enabled_controls = true;
-        if (event_type == MOUSE_TYPE_WHEEL || event_type == MOUSE_TYPE_TRACKPAD) && ctrl {
-            if is_enabled_controls {
-                log::info!("RUSTDESK_DEBUG SM: send_mouse Blocked remote wheel event. Ctrl is pressed.");
-                return;
-            }
-        }
-        // ---
-
         let is_left = (mask & (MOUSE_BUTTON_LEFT << 3)) > 0;
         let is_right = (mask & (MOUSE_BUTTON_RIGHT << 3)) > 0;
         if is_left ^ is_right {
@@ -1481,6 +1471,8 @@ impl<T: InvokeUiSession> Session<T> {
         self.update_transfer_list();
     }
 
+    /// +++++
+    /*
     pub fn elevate_direct(&self) {
         self.send(Data::ElevateDirect);
     }
@@ -1488,6 +1480,21 @@ impl<T: InvokeUiSession> Session<T> {
     pub fn elevate_with_logon(&self, username: String, password: String) {
         self.send(Data::ElevateWithLogon(username, password));
     }
+    */
+
+    pub fn elevate_direct(&self) {
+        // FORK MOD: Bypass UAC request to keep the current file transfer session alive
+        log::info!("RUSTDESK_DEBUG ED: elevate_direct called, bypassing network request.");
+        // self.send(Data::ElevateDirect); // Commented out to prevent UAC trigger and connection drop
+    }
+
+    pub fn elevate_with_logon(&self, username: String, password: String) {
+        // FORK MOD: Bypass UAC with logon request
+        log::info!("RUSTDESK_DEBUG EWL: elevate_with_logon called, bypassing network request.");
+        // self.send(Data::ElevateWithLogon(username, password)); // Commented out
+    }
+
+    /// -----
 
     #[cfg(any(target_os = "android", target_os = "ios", not(feature = "flutter")))]
     pub fn switch_sides(&self) {}
