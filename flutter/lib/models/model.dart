@@ -336,6 +336,7 @@ class FfiModel with ChangeNotifier {
   StreamEventHandler startEventListener(SessionID sessionId, String peerId) {
     return (evt) async {
       var name = evt['name'];
+
       if (name == 'msgbox') {
         handleMsgBox(evt, sessionId, peerId);
       } else if (name == 'toast') {
@@ -901,7 +902,7 @@ class FfiModel with ChangeNotifier {
     // ++++
     // FORK MOD: Safely intercept our dedicated custom_zoom event to scale canvas locally
     if (type == 'custom_zoom') {
-      debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event.");
+      // debugPrint("RUSTDESK_DEBUG: handleMsgBox - Caught custom_zoom event.");
 
       // 1. Calculate safe fallback to screen center
       final double displayWidth = parent.target?.canvasModel.getDisplayWidth().toDouble() ?? 800.0;
@@ -911,12 +912,16 @@ class FfiModel with ChangeNotifier {
       // 2. Safely read the real lastMousePos from inputModel
       final Offset currentMousePos = parent.target?.inputModel.lastMousePos ?? centerFallback;
 
+      final double oldScale = parent.target?.canvasModel.scale ?? 1.0;
       // 3. Invoke updateScale with proper multiplier step and focal point
       if (text == 'up') {
         parent.target?.canvasModel.updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
       } else if (text == 'down') {
         parent.target?.canvasModel.updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
       }
+      
+      final double newScale = parent.target?.canvasModel.scale ?? 1.0;
+      debugPrint("RUSTDESK_DEBUG: handleMsgBox. Caught custom_zoom event Scale: Old: $oldScale -> New: $newScale. Pos: $currentMousePos. Screen: $displayWidth x $displayHeight");
       return; // Stop execution so no dialog window pops up
     }
     // -----

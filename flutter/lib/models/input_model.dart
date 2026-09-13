@@ -1100,7 +1100,7 @@ class InputModel {
   Future<void> scroll(int y) async {
     if (isViewCamera) return;
     // ++++
-    debugPrint("RUSTDESK_DEBUG SCR: Scroll. Scale: $y");
+    debugPrint("RUSTDESK_DEBUG: input_model.scroll. Scale: $y");
     // ----
     await bind.sessionSendMouse(
         sessionId: sessionId,
@@ -1127,7 +1127,7 @@ class InputModel {
   /// changed after the matching down was sent.
   Future<void> _sendMouseUnchecked(String type, MouseButtons button) async {
     // ++++
-    debugPrint("RUSTDESK_DEBUG SMU: _sendMouseUnchecked on enter");
+    debugPrint("RUSTDESK_DEBUG: input_model._sendMouseUnchecked on enter");
     // ----
     await bind.sessionSendMouse(
         sessionId: sessionId,
@@ -1336,13 +1336,13 @@ class InputModel {
     if (isViewOnly) return;
     if (isViewCamera) return;
     // ++++
-    debugPrint("RUSTDESK_DEBUG PZU: onPointerPanZoomUpdate on enter");
+    debugPrint("RUSTDESK_DEBUG: input_model.onPointerPanZoomUpdate on enter");
     // ----
 
     if (HardwareKeyboard.instance.isControlPressed) {
       if (e.panDelta.dy != 0) {
         final double scaleFactor = e.panDelta.dy > 0 ? 1.1 : 0.9;
-        debugPrint("RUSTDESK_DEBUG PZU: PanZoom Zoom Active. Scale: $scaleFactor");
+        debugPrint("RUSTDESK_DEBUG: input_model.PanZoom Zoom Active. Scale: $scaleFactor");
         
         for (final ctrlKey in ['Control_L', 'Control_R']) {
           bind.sessionInputKey(
@@ -1425,7 +1425,7 @@ class InputModel {
   void _scheduleFling(double x, double y, int delay) {
     if (isViewCamera) return;
     // ++++
-    debugPrint("RUSTDESK_DEBUG SF: _scheduleFling on enter");
+    debugPrint("RUSTDESK_DEBUG: input_model._scheduleFling on enter");
     // ----
 
     if ((x == 0 && y == 0) || _stopFling) {
@@ -1950,7 +1950,7 @@ class InputModel {
     bool edgeScroll = false,
   }) {
     // ++++
-    debugPrint("RUSTDESK_DEBUG HM: handleMouse on enter");
+    debugPrint("RUSTDESK_DEBUG HM: handleMouse on enter evt: $evt offset: $offset");
     // ----
 
     final evtToPeer = processEventToPeer(evt, offset,
