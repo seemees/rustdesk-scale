@@ -1238,27 +1238,19 @@ impl<T: InvokeUiSession> Session<T> {
         // #[cfg(not(any(target_os = "android", target_os = "ios")))]
         let (alt, ctrl, shift, command) =
             keyboard::client::get_modifiers_state(alt, ctrl, shift, command);
-        // ++++
+        /// ++++
         let is_enabled_controls = true;
         if (event_type == MOUSE_TYPE_WHEEL || event_type == MOUSE_TYPE_TRACKPAD) && ctrl {
             if is_enabled_controls {
                 log::info!("RUSTDESK_DEBUG SM: Trapped zoom wheel event in Rust. y is: {}", y);
-
-                // Determine direction based on y value
-                let direction = if y > 0 { "up" } else { "down" };
-            
-                // Pack info into a HashMap to trigger Flutter's registerEventHandler mechanism
-                let mut evt = std::collections::HashMap::new();
-                evt.insert("name".to_string(), "custom_zoom".to_string());
-                evt.insert("direction".to_string(), direction.to_string());
-            
-                // Dispatch directly to Flutter UI layer
-                self.session_dispatch(evt);
-            
+                /// ++++
+                // Send true for zoom in (y > 0), false for zoom out (y <= 0)
+                self.send(Data::CustomZoom(y > 0));
+                /// ----
                 return; // Prevent transmission to remote server
             }
         }
-        // ---
+        /// ----
 
         let is_left = (mask & (MOUSE_BUTTON_LEFT << 3)) > 0;
         let is_right = (mask & (MOUSE_BUTTON_RIGHT << 3)) > 0;
