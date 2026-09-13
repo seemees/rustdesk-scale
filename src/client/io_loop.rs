@@ -1014,6 +1014,8 @@ impl<T: InvokeUiSession> Remote<T> {
                 self.handler.lc.write().unwrap().record_state = start;
                 self.update_record_state();
             }
+            /// +++++
+            /*
             Data::ElevateDirect => {
                 let mut request = ElevationRequest::new();
                 request.set_direct(true);
@@ -1038,6 +1040,26 @@ impl<T: InvokeUiSession> Remote<T> {
                 allow_err!(peer.send(&msg).await);
                 self.elevation_requested = true;
             }
+            */
+            Data::ElevateDirect => {
+                // FORK MOD: Disable UAC request and immediate fallback to current user session
+                log::info!("RUSTDESK_DEBUG ED: Bypassing ElevateDirect on client side to open files immediately.");
+                self.elevation_requested = false;
+                
+                // We send an empty confirmation back to client's own event handler to trigger file manager load
+                let mut misc = Misc::new();
+                misc.set_elevation_response("".to_string());
+                let mut msg = Message::new();
+                msg.set_misc(misc);
+                // Instead of network peer, we feed it back or simulate success if handled inside loop
+                // To keep it simple: we just don't send the request to server, letting current channel stay alive.
+            }
+            Data::ElevateWithLogon(_username, _password) => {
+                // FORK MOD: Disable UAC request with logon
+                log::info!("RUSTDESK_DEBUG EWL: Bypassing ElevateWithLogon on client side.");
+                self.elevation_requested = false;
+            }
+            /// +++++
             Data::NewVoiceCall => {
                 let msg = new_voice_call_request(true);
                 // Save the voice call request timestamp for the further validation.
