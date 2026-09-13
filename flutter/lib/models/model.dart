@@ -902,14 +902,24 @@ class FfiModel with ChangeNotifier {
     // FORK MOD: Safely intercept our dedicated custom_zoom event to scale canvas locally
     if (type == 'custom_zoom') {
       debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event. Action: $text");
+
+      // 1. Calculate safe fallback to screen center
+      final double displayWidth = getDisplayWidth().toDouble();
+      final double displayHeight = getDisplayHeight().toDouble();
+      final Offset centerFallback = Offset(displayWidth / 2, displayHeight / 2);
+
+      // 2. Safely read the real lastMousePos from inputModel
+      final Offset currentMousePos = parent.target?.inputModel.lastMousePos ?? centerFallback;
+
+      // 3. Invoke updateScale with proper multiplier step and focal point
       if (text == 'up') {
-        updateScale(1.0); // Directly invoke your custom scale zoom-in logic
+        updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
       } else if (text == 'down') {
-        updateScale(-1.0); // Directly invoke your custom scale zoom-out logic
+        updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
       }
       return; // Stop execution so no dialog window pops up
     }
-    /// ----
+    /// -----
 
     // The peer-gone detector reconnects under `restarting-show` rather than an error title, so
     // it needs naming here too. By its own title, not the type: an explicitly restarted remote
