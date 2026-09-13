@@ -1043,7 +1043,7 @@ impl<T: InvokeUiSession> Remote<T> {
             */
             Data::ElevateDirect => {
                 // FORK MOD: Disable UAC request and immediate fallback to current user session
-                log::info!("RUSTDESK_DEBUG ED: Bypassing ElevateDirect on client side to open files immediately.");
+                log::info!("RUSTDESK_DEBUG ED: handle_msg_from_ui Bypassing ElevateDirect on client side to open files immediately.");
                 self.elevation_requested = false;
                 
                 // We send an empty confirmation back to client's own event handler to trigger file manager load
@@ -1056,10 +1056,21 @@ impl<T: InvokeUiSession> Remote<T> {
             }
             Data::ElevateWithLogon(_username, _password) => {
                 // FORK MOD: Disable UAC request with logon
-                log::info!("RUSTDESK_DEBUG EWL: Bypassing ElevateWithLogon on client side.");
+                log::info!("RUSTDESK_DEBUG EWL: handle_msg_from_ui Bypassing ElevateWithLogon on client side.");
                 self.elevation_requested = false;
             }
-            /// +++++
+            // FORK MOD: Process our independent zoom event and route it to Flutter UI via msgbox pipeline
+            Data::CustomZoom(is_zoom_in) => {
+                log::info!("RUSTDESK_DEBUG CZ: handle_msg_from_ui Processing local CustomZoom event. Is Zoom In: {}", is_zoom_in);
+                let direction_marker = if is_zoom_in { "up" } else { "down" };
+                self.handler.msgbox(
+                    "custom_zoom",
+                    "",
+                    direction_marker,
+                    "",
+                );
+            }
+            /// ----
             Data::NewVoiceCall => {
                 let msg = new_voice_call_request(true);
                 // Save the voice call request timestamp for the further validation.
