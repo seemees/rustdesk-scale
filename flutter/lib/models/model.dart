@@ -889,6 +889,21 @@ class FfiModel with ChangeNotifier {
 
   /// Handle the message box event based on [evt] and [id].
   handleMsgBox(Map<String, dynamic> evt, SessionID sessionId, String peerId) {
+
+    /// +++++
+    // FORK MOD: Trap custom zoom event dispatched from Rust to update scale locally
+    if (evt['name'] == 'custom_zoom') {
+      debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event. Direction: ${evt['direction']}");
+      final direction = evt['direction'];
+      if (direction == 'up') {
+        updateScale(1.0); // Directly invoke your custom scroll logic to zoom in
+      } else if (direction == 'down') {
+        updateScale(-1.0); // Directly invoke your custom scroll logic to zoom out
+      }
+      return; // Stop further execution for this event
+    }
+    /// -----
+
     if (parent.target == null) return;
     final dialogManager = parent.target!.dialogManager;
     final type = evt['type'];
