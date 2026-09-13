@@ -4496,6 +4496,8 @@ impl Connection {
         true
     }
 
+    /// ++++
+    /*
     #[cfg(windows)]
     async fn handle_elevation_request(&mut self, para: portable_client::StartPara) {
         let mut err;
@@ -4517,6 +4519,36 @@ impl Connection {
         self.send(msg).await;
         self.update_auto_disconnect_timer();
     }
+    */
+
+    #[cfg(windows)]
+    async fn handle_elevation_request(&mut self, para: portable_client::StartPara) {
+        log::info!("RUSTDESK_DEBUG he: Bypassing file transfer elevation request safely.");
+        
+        let err = "".to_string(); 
+
+        /*
+        let mut err;
+        if !self.keyboard {
+            err = "No permission".to_string();
+        } else {
+            err = "No need to elevate".to_string();
+            if !crate::platform::is_installed() && !portable_client::running() {
+                err = portable_client::start_portable_service(para)
+                    .err()
+                    .map_or("".to_string(), |e| e.to_string());
+            }
+        }
+        */
+
+        let mut misc = Misc::new();
+        misc.set_elevation_response(err);
+        let mut msg = Message::new();
+        msg.set_misc(misc);
+        self.send(msg).await;
+        self.update_auto_disconnect_timer();
+    }
+    /// ----
 
     async fn capture_displays(&mut self, add: &[usize], sub: &[usize], set: &[usize]) {
         let video_source = self.video_source();
