@@ -1014,7 +1014,7 @@ impl<T: InvokeUiSession> Remote<T> {
                 self.handler.lc.write().unwrap().record_state = start;
                 self.update_record_state();
             }
-            /// +++++
+            // +++++
             /*
             Data::ElevateDirect => {
                 let mut request = ElevationRequest::new();
@@ -1070,7 +1070,7 @@ impl<T: InvokeUiSession> Remote<T> {
                     "",
                 );
             }
-            /// ----
+            // ----
             Data::NewVoiceCall => {
                 let msg = new_voice_call_request(true);
                 // Save the voice call request timestamp for the further validation.
