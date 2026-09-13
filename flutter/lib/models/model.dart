@@ -904,8 +904,8 @@ class FfiModel with ChangeNotifier {
       debugPrint("RUSTDESK_DEBUG HMB: handleMsgBox - Caught custom_zoom event.");
 
       // 1. Calculate safe fallback to screen center
-      final double displayWidth = parent.target?.canvasModel.getDisplayWidth().toDouble();
-      final double displayHeight = parent.target?.canvasModel.getDisplayHeight().toDouble();
+      final double displayWidth = parent.target?.canvasModel.getDisplayWidth().toDouble() ?? 800.0;
+      final double displayHeight = parent.target?.canvasModel.getDisplayHeight().toDouble() ?? 450.0;
       final Offset centerFallback = Offset(displayWidth / 2, displayHeight / 2);
 
       // 2. Safely read the real lastMousePos from inputModel
