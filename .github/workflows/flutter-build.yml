@@ -283,6 +283,29 @@ jobs:
 
       - name: Build rustdesk
         run: |
+          # ++++
+          # FORK INTEGRATION: Automatically inject custom server and key from workflow env block
+          $configFile = "libs/hbb_common/src/config.rs"
+          
+          # 1. Dynamically read the original public key from the file to handle any upstream changes
+          $origKeyLine = Get-Content $configFile | Select-String -Pattern 'pub const RS_PUB_KEY: &str ='
+          if ($origKeyLine -match '"([^"]+)"') { $origKey = $matches[1] }
+
+          # 2. Inject custom rendezvous server into the file using PowerShell environment variable
+          (Get-Content $configFile) -replace 'pub const RENDEZVOUS_SERVERS: &\s*\[&\s*str\s*\]\s*=\s*&\[\s*"rs-ny\.rustdesk\.com"\s*\];', "pub const RENDEZVOUS_SERVERS: &[&str] = &[`"$env:RENDEZVOUS_SERVER`"];" | Set-Content $configFile
+          
+          # 3. Inject custom public key into the file using PowerShell environment variable
+          if ($origKey) {
+              (Get-Content $configFile) -replace [regex]::Escape($origKey), $env:RS_PUB_KEY | Set-Content $configFile
+          }
+
+          # 4. Verification: Print the modified lines in full to the build log
+          Write-Output "--- VERIFYING MODIFIED CONFIG LINES ---"
+          Get-Content $configFile | Select-String -Pattern "pub const RENDEZVOUS_SERVERS"
+          Get-Content $configFile | Select-String -Pattern "pub const RS_PUB_KEY"
+          Write-Output "---------------------------------------"
+          # ----
+
           # Windows: build RustDesk
           # --hwcodec is shared by all Windows targets; per-target extras (e.g. --vram) come from the matrix
           python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec ${{ matrix.job.build-args }}
