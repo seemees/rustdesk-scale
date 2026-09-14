@@ -1099,9 +1099,6 @@ class InputModel {
   /// Send scroll event with scroll distance [y].
   Future<void> scroll(int y) async {
     if (isViewCamera) return;
-    // ++++
-    debugPrint("RUSTDESK_DEBUG: input_model.scroll. Scale: $y");
-    // ----
     await bind.sessionSendMouse(
         sessionId: sessionId,
         msg: json
@@ -1126,9 +1123,6 @@ class InputModel {
   /// Used for side button releases that must go through even if permissions
   /// changed after the matching down was sent.
   Future<void> _sendMouseUnchecked(String type, MouseButtons button) async {
-    // ++++
-    debugPrint("RUSTDESK_DEBUG: _sendMouseUnchecked type=$type, button=button");
-    // ----
     await bind.sessionSendMouse(
         sessionId: sessionId,
         msg: json.encode(modify({'type': type, 'buttons': button.value})));
@@ -1336,14 +1330,14 @@ class InputModel {
     if (isViewOnly) return;
     if (isViewCamera) return;
     // ++++
-    debugPrint("RUSTDESK_DEBUG: onPointerPanZoomUpdate $e");
+    debugPrint("RUSTDESK_DEBUG: input_model: onPointerPanZoomUpdate $e");
     // ----
 
     if (HardwareKeyboard.instance.isControlPressed) {
       if (e.panDelta.dy != 0) {
         final double scaleFactor = e.panDelta.dy > 0 ? 1.1 : 0.9;
         // ++++
-        debugPrint(" RUSTDESK_DEBUG: onPointerPanZoomUpdate2 PanZoom Zoom Active. Scale: $scaleFactor");
+        debugPrint("RUSTDESK_DEBUG: input_model: onPointerPanZoomUpdate2 PanZoom Zoom Active. Scale: $scaleFactor");
         // ----
         for (final ctrlKey in ['Control_L', 'Control_R']) {
           bind.sessionInputKey(
@@ -1426,7 +1420,7 @@ class InputModel {
   void _scheduleFling(double x, double y, int delay) {
     if (isViewCamera) return;
     // ++++
-    debugPrint("RUSTDESK_DEBUG: input_model._scheduleFling x=$x, y=$y, delay=$delay");
+    debugPrint("RUSTDESK_DEBUG: input_model: _scheduleFling x=$x, y=$y, delay=$delay");
     // ----
 
     if ((x == 0 && y == 0) || _stopFling) {
@@ -1689,7 +1683,7 @@ class InputModel {
     if (isViewOnly) return;
     if (isViewCamera) return;
     // ++++
-    debugPrint("RUSTDESK_DEBUG: onPointerSignalImage e=$e");
+    debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage e=$e");
     // ----
     if (e is PointerScrollEvent) {
       bool enabledOpt = true;
@@ -1697,7 +1691,7 @@ class InputModel {
         final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
 
         // ++++
-        debugPrint(" RUSTDESK_DEBUG: onPointerSignalImage2 Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition.dx}x${e.localPosition.dy}");
+        debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition.dx}x${e.localPosition.dy}");
         // ----
         
         for (final ctrlKey in ['Control_L']) {
@@ -1955,7 +1949,7 @@ class InputModel {
     // ++++
     final String evtX = evt['x']?.toString() ?? evt['dx']?.toString() ?? 'no_x';
     final String evtY = evt['y']?.toString() ?? evt['dy']?.toString() ?? 'no_y';
-    debugPrint("RUSTDESK_DEBUG: handleMouse. Offset: (${offset.dx.toStringAsFixed(1)}, ${offset.dy.toStringAsFixed(1)}). Evt data: X=$evtX, Y=$evtY, type=${evt['type']}, onExit=$onExit, moveCanvas=$moveCanvas, edgeScroll=$edgeScroll");
+    debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Offset: (${offset.dx.toStringAsFixed(1)}, ${offset.dy.toStringAsFixed(1)}). Evt data: type=${evt['type']}");
     // ----
 
     final evtToPeer = processEventToPeer(evt, offset,
