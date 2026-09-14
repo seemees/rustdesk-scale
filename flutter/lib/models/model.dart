@@ -2817,7 +2817,7 @@ class CanvasModel with ChangeNotifier {
       isMobileCanvasChanged = true;
     }
     notifyListeners();
-    debugPrint("RUSTDESK_DEBUG: updateScale. v=$v, _scale=$_scale, _x=$_x, _y=$_y");
+    debugPrint("RUSTDESK_DEBUG: updateScale. v=$v, maxs=$maxs, mins=$mins, displayWidth=$displayWidth, displayHeight=$displayHeight, viewWidth=$viewWidth, viewHeight=$viewHeight, _scale=$_scale, _x=$_x, _y=$_y");
 
   }
   //----
