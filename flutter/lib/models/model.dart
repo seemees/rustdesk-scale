@@ -914,17 +914,26 @@ class FfiModel with ChangeNotifier {
 
       final double oldScale = parent.target?.canvasModel.scale ?? 1.0;
       // 3. Invoke updateScale with proper multiplier step and focal point
-      bool call;
+      int call = 0;
+      int state = 0;
+      if(parent.target == null){
+          state = 5;
+      } else {
+          state = 10;
+          if (parent.target?.canvasModel == null) {
+              state = 15;
+          }
+      }
       if (text == 'up') {
-        call = true;
+        call = 1;
         parent.target?.canvasModel.updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
       } else if (text == 'down') {
-        call = false;
+        call = 2;
         parent.target?.canvasModel.updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
       }
       
       final double newScale = parent.target?.canvasModel.scale ?? 1.0;
-      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox. Custom_zoom evt $text ($call). Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x {currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
+      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox. Custom_zoom evt $text ($call) state=$state. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x {currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
       return; // Stop execution so no dialog window pops up
     }
     // -----
