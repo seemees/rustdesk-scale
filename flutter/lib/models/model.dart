@@ -2790,11 +2790,34 @@ class CanvasModel with ChangeNotifier {
     // final maxs = parent.target?.imageModel.maxScale ?? 1;
     // final mins = parent.target?.imageModel.minScale ?? 1;
     final maxs = 16.0;
-    final mins = 0.25;
+    // final mins = 0.25;
+    var mins = 0.25;
+    // final size = parent.target?.canvasModel.getSize() ?? Offset(0, 0);
+    final cx = size.width;
+    final cy = size.height;
 
-    // ++++
-    debugPrint("RUSTDESK_DEBUG: updateScale1 IN -> v=$v | s_old=$s | s_multiplied=$_scale | mins=$mins | maxs=$maxs");
-    // ----
+    final mediaData = MediaQueryData.fromView(ui.window);
+    final mediaSize = mediaData.size;
+    final mx = mediaSize.width;
+    final my = mediaSize.height;
+
+    // If minimized, w or h may be negative here.
+    // double w = size.width - leftToEdge - rightToEdge;
+    // double h = size.height - topToEdge - bottomToEdge;
+    final displayWidth = mx;	// parent.target?.imageModel.displayWidth ?? 1280.0;
+    final displayHeight = my;	// parent.target?.imageModel.displayHeight ?? 720.0;
+    final vWidth = cx;	//parent.target?.imageModel.viewWidth ?? 0.0;
+    final vHeight = cy;	//parent.target?.imageModel.viewHeight ?? 0.0;
+
+    if (vWidth > 0 && vHeight > 0) {
+      final scaleToFitWidth = vWidth / displayWidth;
+      final scaleToFitHeight = vHeight / displayHeight;
+      final dynamicMinScale = scaleToFitWidth > scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
+      
+      if (dynamicMinScale > mins) {
+        mins = dynamicMinScale;
+      }
+    }
 
     if (_scale > maxs) _scale = maxs;
     if (_scale < mins) _scale = mins;
@@ -2808,13 +2831,18 @@ class CanvasModel with ChangeNotifier {
     if (isMobile) {
       isMobileCanvasChanged = true;
     }
+
     // ++++
-    debugPrint("RUSTDESK_DEBUG: updateScale2 before -> final_scale=$_scale | _x=$_x | _y=$_y");
+    debugPrint("RUSTDESK_DEBUG: updateScale1 IN -> v=$v | s_old=$s | s_multiplied=$_scale | _xy=$_x x  $_y | focal=${focalPoint.dx} x ${focalPoint.dy}| cxy=$cx x $cy | mxy=$mx x $my | mins=$mins");
+    // ----
+
+    // ++++
+    // debugPrint("RUSTDESK_DEBUG: updateScale2 before -> final_scale=$_scale | _x=$_x | _y=$_y");
     // ----
 
     notifyListeners();
     // ++++
-    debugPrint("RUSTDESK_DEBUG: updateScale3 after -> final_scale=$_scale | _x=$_x | _y=$_y");
+    // debugPrint("RUSTDESK_DEBUG: updateScale3 after -> final_scale=$_scale | _x=$_x | _y=$_y");
     // ----
   }
 

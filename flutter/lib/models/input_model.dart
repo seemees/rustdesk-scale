@@ -1655,14 +1655,17 @@ class InputModel {
   /// scroll deltas that are independent of cursor position. Games and 3D applications
   /// handle scroll events the same way regardless of mouse mode.
   void onPointerSignalImage(PointerSignalEvent e) {
-    if (isViewOnly) return;
+    // ++++
+    // if (isViewOnly) return;
+    if (true || isViewOnly) return;
+    // ----
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
       final rawDx = e.scrollDelta.dx;
       final rawDy = e.scrollDelta.dy;
 
       // ++++
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy");
+      //debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy");
       // ----
 
       final dominantDelta = rawDx.abs() > rawDy.abs() ? rawDx.abs() : rawDy.abs();
@@ -1904,7 +1907,7 @@ class InputModel {
     // ++++
     //final String evtX = evt['x']?.toString() ?? evt['dx']?.toString() ?? 'no_x';
     //final String evtY = evt['y']?.toString() ?? evt['dy']?.toString() ?? 'no_y';
-    debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toStringAsFixed(1)} x ${offset.dy.toStringAsFixed(1)}");
+    //debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toStringAsFixed(1)} x ${offset.dy.toStringAsFixed(1)}");
     // ----
 
     final evtToPeer = processEventToPeer(evt, offset,
