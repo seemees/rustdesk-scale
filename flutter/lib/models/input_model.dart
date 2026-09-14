@@ -1325,29 +1325,10 @@ class InputModel {
   }
 
   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures
-  //++++
   void onPointerPanZoomUpdate(PointerPanZoomUpdateEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
-    // ++++
-    debugPrint("RUSTDESK_DEBUG: input_model: onPointerPanZoomUpdate $e");
-    // ----
-
-    if (HardwareKeyboard.instance.isControlPressed) {
-      if (e.panDelta.dy != 0) {
-        final double scaleFactor = e.panDelta.dy > 0 ? 1.1 : 0.9;
-        // ++++
-        debugPrint("RUSTDESK_DEBUG: input_model: onPointerPanZoomUpdate2 PanZoom Zoom Active. Scale: $scaleFactor");
-        // ----
-        for (final ctrlKey in ['Control_L', 'Control_R']) {
-          bind.sessionInputKey(
-            sessionId: sessionId, name: ctrlKey, down: false, press: false,
-            alt: false, ctrl: false, shift: false, command: false,
-          );
-        }
-        parent.target?.canvasModel.updateScale(scaleFactor, e.localPosition);
-        return;
-      }
+    if (peerPlatform != kPeerPlatformAndroid) {
       final scale = ((e.scale - _lastScale) * 1000).toInt();
       _lastScale = e.scale;
 
@@ -1397,7 +1378,6 @@ class InputModel {
       }
     }
   }
-  //----
 
   Offset _filterTrackpadDeltaAxis(Offset delta) {
     final absDx = delta.dx.abs();
@@ -1419,10 +1399,6 @@ class InputModel {
 
   void _scheduleFling(double x, double y, int delay) {
     if (isViewCamera) return;
-    // ++++
-    debugPrint("RUSTDESK_DEBUG: input_model: _scheduleFling x=$x, y=$y, delay=$delay");
-    // ----
-
     if ((x == 0 && y == 0) || _stopFling) {
       _fling = false;
       return;
@@ -1678,43 +1654,17 @@ class InputModel {
   /// This is because scroll events don't need relative positioning - they represent
   /// scroll deltas that are independent of cursor position. Games and 3D applications
   /// handle scroll events the same way regardless of mouse mode.
-  //++++
   void onPointerSignalImage(PointerSignalEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
-    // ++++
-    debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage e=$e");
-    // ----
     if (e is PointerScrollEvent) {
-      bool enabledOpt = true;
-      if (enabledOpt && HardwareKeyboard.instance.isControlPressed) {
-        final double scaleFactor = e.scrollDelta.dy < 0 ? 1.1 : 0.9;
-
-        // ++++
-        debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 Ctrl + Wheel detected! Scale: $scaleFactor, Pos: ${e.localPosition.dx}x${e.localPosition.dy}");
-        // ----
-        
-        for (final ctrlKey in ['Control_L']) {
-          bind.sessionInputKey(
-            sessionId: sessionId,
-            name: ctrlKey,
-            down: false,
-            press: false,
-            alt: false,
-            ctrl: false,
-            shift: false,
-            command: false,
-          );
-        }
-        
-        parent.target?.canvasModel.updateScale(scaleFactor, e.localPosition);
-        
-        return;
-      }
-
-
       final rawDx = e.scrollDelta.dx;
       final rawDy = e.scrollDelta.dy;
+
+      // ++++
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage x=$rawDx y=$rawDy");
+      // ----
+
       final dominantDelta = rawDx.abs() > rawDy.abs() ? rawDx.abs() : rawDy.abs();
       final isSmooth = dominantDelta < 1;
       final nowUs = DateTime.now().microsecondsSinceEpoch;
@@ -1757,7 +1707,6 @@ class InputModel {
           msg: '{"type": "wheel", "x": "$dx", "y": "$dy"}');
     }
   }
-  //----
 
   void refreshMousePos() => handleMouse({
         'buttons': 0,
@@ -1947,9 +1896,9 @@ class InputModel {
     bool edgeScroll = false,
   }) {
     // ++++
-    final String evtX = evt['x']?.toString() ?? evt['dx']?.toString() ?? 'no_x';
-    final String evtY = evt['y']?.toString() ?? evt['dy']?.toString() ?? 'no_y';
-    debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Offset: (${offset.dx.toStringAsFixed(1)}, ${offset.dy.toStringAsFixed(1)}). Evt data: type=${evt['type']}");
+    //final String evtX = evt['x']?.toString() ?? evt['dx']?.toString() ?? 'no_x';
+    //final String evtY = evt['y']?.toString() ?? evt['dy']?.toString() ?? 'no_y';
+    debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toStringAsFixed(1)} x ${offset.dy.toStringAsFixed(1)}");
     // ----
 
     final evtToPeer = processEventToPeer(evt, offset,
