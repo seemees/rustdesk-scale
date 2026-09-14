@@ -921,7 +921,7 @@ class FfiModel with ChangeNotifier {
       }
       
       final double newScale = parent.target?.canvasModel.scale ?? 1.0;
-      debugPrint("RUSTDESK_DEBUG: handleMsgBox. Caught custom_zoom event Scale: Old: $oldScale -> New: $newScale. Pos: $currentMousePos. Screen: $displayWidth x $displayHeight");
+      debugPrint("RUSTDESK_DEBUG: handleMsgBox. Caught custom_zoom event Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x {currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
       return; // Stop execution so no dialog window pops up
     }
     // -----
@@ -2817,6 +2817,8 @@ class CanvasModel with ChangeNotifier {
       isMobileCanvasChanged = true;
     }
     notifyListeners();
+    debugPrint("RUSTDESK_DEBUG: updateScale. v=$v, _scale=$_scale, _x=$_x, _y=$_y");
+
   }
   //----
 
