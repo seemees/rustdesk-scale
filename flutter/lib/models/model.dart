@@ -2795,7 +2795,7 @@ class CanvasModel with ChangeNotifier {
   // mobile and desktop zoom handler
   updateScale(double v, Offset focalPoint) {
     debugPrint("RUSTDESK_DEBUG: updateScale1. v=$v");
-    if (parent.target?.imageModel.image == null) return;
+    //if (parent.target?.imageModel.image == null) return;
     final s = _scale;
     _scale *= v;
     final maxs = parent.target?.imageModel.maxScale ?? 1;
