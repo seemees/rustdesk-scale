@@ -1662,7 +1662,7 @@ class InputModel {
       final rawDy = e.scrollDelta.dy;
 
       // ++++
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage x=$rawDx y=$rawDy");
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy");
       // ----
 
       final dominantDelta = rawDx.abs() > rawDy.abs() ? rawDx.abs() : rawDy.abs();
@@ -1702,9 +1702,15 @@ class InputModel {
       } else if (dy < 0) {
         dy = accel;
       }
+      // ++++
+      debugPrint("RUSTDESK_DEBUG: onPointerSignalImage2 IN -> dx=$dx dy=$dy");
+      // ----
       bind.sessionSendMouse(
           sessionId: sessionId,
           msg: '{"type": "wheel", "x": "$dx", "y": "$dy"}');
+      // ++++
+      debugPrint("RUSTDESK_DEBUG: onPointerSignalImage3 OUT -> dx=$dx dy=$dy");
+      // ----
     }
   }
 

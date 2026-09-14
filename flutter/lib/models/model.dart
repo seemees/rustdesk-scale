@@ -911,28 +911,18 @@ class FfiModel with ChangeNotifier {
       final Offset currentMousePos = parent.target?.inputModel.lastMousePos ?? centerFallback;
 
       final double oldScale = parent.target?.canvasModel._scale ?? 1.0;
+
+      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox1. Custom_zoom evt $text. Scale: $oldScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
       // 3. Invoke updateScale with proper multiplier step and focal point
-      int call = 0;
-      int state = 0;
-      if(parent.target == null){
-          state = 5;
-      } else {
-          state = 10;
-          if (parent.target?.canvasModel == null) {
-              state = 15;
-          }
-      }
       if (text == 'up') {
-        call = 1;
         parent.target?.canvasModel.updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
       } else if (text == 'down') {
-        call = 2;
         parent.target?.canvasModel.updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
       }
       
       final double newScale = parent.target?.canvasModel._scale ?? 1.0;
       //debugPrint("RUSTDESK_DEBUG: model: handleMsgBox. Custom_zoom evt $text ($call) state=$state. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x {currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
-      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox. Custom_zoom evt $text. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
+      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox2. Custom_zoom evt $text. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
       return; // Stop execution so no dialog window pops up
     }
     // -----
@@ -2766,6 +2756,7 @@ class CanvasModel with ChangeNotifier {
     notifyListeners();
   }
 
+  // ++++
   /*
   // mobile only
   updateScale(double v, Offset focalPoint) {
@@ -2790,9 +2781,46 @@ class CanvasModel with ChangeNotifier {
   }
   */
 
+  // mobile only
+  updateScale(double v, Offset focalPoint) {
+    
+    // if (parent.target?.imageModel.image == null) return;
+    final s = _scale;
+    _scale *= v;
+    // final maxs = parent.target?.imageModel.maxScale ?? 1;
+    // final mins = parent.target?.imageModel.minScale ?? 1;
+    final maxs = 16.0;
+    final mins = 0.25;
+
+    // ++++
+    debugPrint("RUSTDESK_DEBUG: updateScale1 IN -> v=$v | s_old=$s | s_multiplied=$_scale | mins=$mins | maxs=$maxs");
+    // ----
+
+    if (_scale > maxs) _scale = maxs;
+    if (_scale < mins) _scale = mins;
+    // (focalPoint.dx - _x_1) / s1 + displayOriginX = (focalPoint.dx - _x_2) / s2 + displayOriginX
+    // _x_2 = focalPoint.dx - (focalPoint.dx - _x_1) / s1 * s2
+    _x = focalPoint.dx - (focalPoint.dx - _x) / s * _scale;
+    final adjust = getAdjustY();
+    // (focalPoint.dy - _y_1 - adjust) / s1 + displayOriginY = (focalPoint.dy - _y_2 - adjust) / s2 + displayOriginY
+    // _y_2 = focalPoint.dy - adjust - (focalPoint.dy - _y_1 - adjust) / s1 * s2
+    _y = focalPoint.dy - adjust - (focalPoint.dy - _y - adjust) / s * _scale;
+    if (isMobile) {
+      isMobileCanvasChanged = true;
+    }
+    // ++++
+    debugPrint("RUSTDESK_DEBUG: updateScale2 before -> final_scale=$_scale | _x=$_x | _y=$_y");
+    // ----
+
+    notifyListeners();
+    // ++++
+    debugPrint("RUSTDESK_DEBUG: updateScale3 after -> final_scale=$_scale | _x=$_x | _y=$_y");
+    // ----
+  }
+
   //++++
   // mobile and desktop zoom handler
-  updateScale(double v, Offset focalPoint) {
+  updateScale_old(double v, Offset focalPoint) {
     //debugPrint("RUSTDESK_DEBUG: updateScale1. v=$v");
     //if (parent.target?.imageModel.image == null) return;
     final s = _scale;
