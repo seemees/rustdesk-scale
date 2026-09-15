@@ -2822,28 +2822,17 @@ class CanvasModel with ChangeNotifier {
     final my = mediaData.size.height;
 
     // ¬ытаскиваем параметры удаленного диспле€ из imageModel
-    final rDeskWidth = parent.target?.imageModel.displayWidth ?? -1.0;
-    final rDeskHeight = parent.target?.imageModel.displayHeight ?? -1.0;
-    final viewW = parent.target?.imageModel.viewWidth ?? -1.0;
-    final viewH = parent.target?.imageModel.viewHeight ?? -1.0;
+    //final rDeskWidth = parent.target?.imageModel.displayWidth ?? -1.0;
+    //final rDeskHeight = parent.target?.imageModel.displayHeight ?? -1.0;
+    //final viewW = parent.target?.imageModel.viewWidth ?? -1.0;
+    //final viewH = parent.target?.imageModel.viewHeight ?? -1.0;
 
     // ѕровер€ем наличие смежных моделей в дереве RustDesk
     // final hasParentTarget = parent.target != null;
     // final hasImageModel = parent.target?.imageModel != null;
     // final hasCanvasModel = parent.target?.canvasModel != null;
 
-    debugPrint(
-      "RUSTDESK_DEBUG: model: updateScale: "
-      "v=$v | s_old=$s -> s_new=$_scale | "
-      "canvas_offset=($_x, $_y) | "
-      "mouse_window=${focalPoint.dx}x${focalPoint.dy} | "
-      "mouse_local=${localX}x${localY} | "
-      "adjust=$adjust | "
-      "canvas_size=${cx}x${cy} | "
-      "media_size=${mx}x${my} | "
-      "rDesk_display=${rDeskWidth}x${rDeskHeight} | "
-      "rDesk_view=${viewW}x${viewH}"
-    );
+    debugPrint("RUSTDESK_DEBUG: model: updateScale: v=$v | s_old=$s -> s_new=$_scale | canvas_offset=($_x, $_y) | mouse_window=$focalPoint.dx x $focalPoint.dy | mouse_local=$localX x $localY | adjust=$adjust | canvas_size=$cx x $cy | media_size=$mx x $my");
     // ----
 
     notifyListeners();
