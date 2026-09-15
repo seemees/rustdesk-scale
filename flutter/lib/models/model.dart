@@ -2795,6 +2795,76 @@ class CanvasModel with ChangeNotifier {
     _scale *= v;
     
     final maxs = 16.0;
+    // ++++
+    var mins = 0.05;
+
+    final rDeskWidth = getDisplayWidth();
+    final rDeskHeight = getDisplayHeight();
+
+    final mediaData = MediaQueryData.fromView(ui.window);
+    final mx = mediaData.size.width;
+    final my = mediaData.size.height;
+
+    if (mx > 0 && my > 0 && rDeskWidth > 0 && rDeskHeight > 0) {
+      final scaleToFitWidth = mx / rDeskWidth;
+      final scaleToFitHeight = my / rDeskHeight;
+      final dynamicMinScale = scaleToFitWidth > scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
+      
+      if (dynamicMinScale > mins) {
+        mins = dynamicMinScale;
+      }
+    }
+    // ----
+
+    if (_scale > maxs) _scale = maxs;
+    if (_scale < mins) _scale = mins;
+
+    final adjust = getAdjustY();
+    final double localX = focalPoint.dx;
+    final double localY = focalPoint.dy - adjust;
+
+    // ++++
+    _x = localX - (localX - _x) / s * _scale;
+    _y = localY - (localY - _y) / s * _scale;
+    // ----
+
+    if (isMobile) {
+      isMobileCanvasChanged = true;
+    }
+
+    final cx = size.width;
+    final cy = size.height;
+    
+    final viewW = parent.target?.ffiModel.rect?.width ?? -1.0;
+    final viewH = parent.target?.ffiModel.rect?.height ?? -1.0;
+
+    final hasParentTarget = parent.target != null;
+    final hasImageModel = parent.target?.imageModel != null;
+    final hasCanvasModel = parent.target?.canvasModel != null;
+
+    debugPrint(
+      "RUSTDESK_DEBUG: model: updateScale: "
+      "v=$v | s_old=$s -> s_new=$_scale | "
+      "canvas_offset=($_x, $_y) | "
+      "mouse_window=${focalPoint.dx}x${focalPoint.dy} | "
+      "mouse_local=${localX}x${localY} | "
+      "adjust=$adjust | "
+      "canvas_size=${cx}x${cy} | "
+      "media_size=${mx}x${my} | "
+      "rDesk_display=${rDeskWidth}x${rDeskHeight} | "
+      "rDesk_view=${viewW}x${viewH} | "
+      "models_state(target:$hasParentTarget, image:$hasImageModel, canvas:$hasCanvasModel)"
+    );
+
+    notifyListeners();
+  }
+
+  /*
+  updateScale_old4(double v, Offset focalPoint) {
+    final s = _scale;
+    _scale *= v;
+    
+    final maxs = 16.0;
     final mins = 1.0; 
 
     if (_scale > maxs) _scale = maxs;
@@ -2846,6 +2916,7 @@ class CanvasModel with ChangeNotifier {
 
     notifyListeners();
   }
+  */
 
   /*
   updateScale(double v, Offset focalPoint) {
