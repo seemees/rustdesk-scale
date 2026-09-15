@@ -1662,16 +1662,16 @@ class InputModel {
       final rawDy = e.scrollDelta.dy;
 
       // ++++
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy");
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy ctrl=$ctrl shift=$shift alt=$alt");
       if (ctrl) {
         final ptrg = parent.target;
         if (ptrg != null) {
           final pcanvas = ptrg.canvasModel;
           if (pcanvas != null) {
-            if (rawDy>0) {
+            if (rawDy<0) {
               debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 zoom up");
               pcanvas.updateScale(1.05, lastMousePos); // Zoom in by multiplying scale by 1.05
-            } else if (rawDy<0) {
+            } else if (rawDy>0) {
               debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 zoom down");
 		      pcanvas.updateScale(0.95, lastMousePos); // Zoom out by multiplying scale by 0.95
             }
