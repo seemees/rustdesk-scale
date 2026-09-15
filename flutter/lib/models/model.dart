@@ -2790,6 +2790,7 @@ class CanvasModel with ChangeNotifier {
   */
 
   // mobile only
+  /*
   updateScale(double v, Offset focalPoint) {
     final s = _scale;
     _scale *= v;
@@ -2837,9 +2838,10 @@ class CanvasModel with ChangeNotifier {
 
     notifyListeners();
   }
+  */
 
-
-  updateScale_old3(double v, Offset focalPoint) {
+  /*
+  updateScale(double v, Offset focalPoint) {
     final s = _scale;
     _scale *= v;
     
@@ -2877,7 +2879,7 @@ class CanvasModel with ChangeNotifier {
 
     notifyListeners();
   }
-
+  */
 
   updateScale_old2(double v, Offset focalPoint) {
     
@@ -2945,6 +2947,7 @@ class CanvasModel with ChangeNotifier {
 
   //++++
   // mobile and desktop zoom handler
+  /*
   updateScale_old(double v, Offset focalPoint) {
     //debugPrint("RUSTDESK_DEBUG: updateScale1. v=$v");
     //if (parent.target?.imageModel.image == null) return;
@@ -2986,6 +2989,7 @@ class CanvasModel with ChangeNotifier {
     notifyListeners();
     debugPrint("RUSTDESK_DEBUG: model: updateScale. v=$v, display=($displayWidth x $displayHeight) view=($viewWidth x viewHeight=$viewHeight) _scale=$_scale, _x=$_x, _y=$_y");
   }
+  */
   //----
 
 
