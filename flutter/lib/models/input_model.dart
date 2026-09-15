@@ -1663,10 +1663,20 @@ class InputModel {
 
       // ++++
       // Используем e.isControlPressed, который зашит в само событие на уровне ОС Windows
-      final bool systemCtrl = e.isControlPressed;
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy ctrl_var=$ctrl system_ctrl=$systemCtrl shift=$shift alt=$alt");
+      // final bool systemCtrl = e.isControlPressed;
+      // final bool isCtrlDown = RawKeyboard.instance.keysPressed
+      //       .contains(LogicalKeyboardKey.controlLeft) ||
+      //   RawKeyboard.instance.keysPressed
+      //       .contains(LogicalKeyboardKey.controlRight);
+      final bool isCtrlDown = RawKeyboard.instance.keysPressed
+            .contains(LogicalKeyboardKey.controlLeft);
+      final bool maskCtrl = (e.buttons & 8) != 0 || (e.buttons & 4) != 0;
+
+
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy ctrl_var=$ctrl isCtrlDown=$isCtrlDown maskCtrl=$maskCtrl shift=$shift alt=$alt");
+      final bool isCtrlDown = isCtrlDown || maskCtrl;
       
-      if (systemCtrl) {
+      if (isCtrlDown) {
         final ptrg = parent.target;
         if (ptrg != null) {
           final pcanvas = ptrg.canvasModel;
