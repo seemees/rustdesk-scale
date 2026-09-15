@@ -2818,10 +2818,10 @@ class CanvasModel with ChangeNotifier {
     final mx = mediaData.size.width;
     final my = mediaData.size.height;
 
-    final rDeskWidth = parent.target?.imageModel.displayWidth ?? -1.0;
-    final rDeskHeight = parent.target?.imageModel.displayHeight ?? -1.0;
-    final viewW = parent.target?.imageModel.viewWidth ?? -1.0;
-    final viewH = parent.target?.imageModel.viewHeight ?? -1.0;
+    final rDeskWidth = getDisplayWidth();
+    final rDeskHeight = getDisplayHeight();
+    final viewW = parent.target?.ffiModel.rect?.width ?? -1.0;
+    final viewH = parent.target?.ffiModel.rect?.height ?? -1.0;
 
     final hasParentTarget = parent.target != null;
     final hasImageModel = parent.target?.imageModel != null;
