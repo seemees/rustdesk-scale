@@ -1668,13 +1668,13 @@ class InputModel {
       //       .contains(LogicalKeyboardKey.controlLeft) ||
       //   RawKeyboard.instance.keysPressed
       //       .contains(LogicalKeyboardKey.controlRight);
-      final bool isCtrlDown = RawKeyboard.instance.keysPressed
+      final bool isCtrlDownRaw = RawKeyboard.instance.keysPressed
             .contains(LogicalKeyboardKey.controlLeft);
-      final bool maskCtrl = (e.buttons & 8) != 0 || (e.buttons & 4) != 0;
+      final bool isCtrlDownButton = (e.buttons & 8) != 0 || (e.buttons & 4) != 0;
 
 
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy ctrl_var=$ctrl isCtrlDown=$isCtrlDown maskCtrl=$maskCtrl shift=$shift alt=$alt");
-      final bool isCtrlDown = isCtrlDown || maskCtrl;
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy ctrl_var=$ctrl CtrlRaw=$isCtrlDownRaw CtrlBut=$isCtrlDownButton (${e.buttons}) shift=$shift alt=$alt");
+      final bool isCtrlDown = isCtrlDownRaw || isCtrlDownButton;
       
       if (isCtrlDown) {
         final ptrg = parent.target;
