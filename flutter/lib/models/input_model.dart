@@ -1655,17 +1655,30 @@ class InputModel {
   /// scroll deltas that are independent of cursor position. Games and 3D applications
   /// handle scroll events the same way regardless of mouse mode.
   void onPointerSignalImage(PointerSignalEvent e) {
-    // ++++
-    // if (isViewOnly) return;
-    if (true || isViewOnly) return;
-    // ----
+    if (isViewOnly) return;
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
       final rawDx = e.scrollDelta.dx;
       final rawDy = e.scrollDelta.dy;
 
       // ++++
-      //debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy");
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy");
+      if (ctrl) {
+        final ptrg = parent.target;
+        if (ptrg != null) {
+          final pcanvas = ptrg.canvasModel;
+          if (pcanvas != null) {
+            if (rawDy>0) {
+              debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 zoom up");
+              pcanvas.updateScale(1.05, lastMousePos); // Zoom in by multiplying scale by 1.05
+            } else if (rawDy<0) {
+              debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 zoom down");
+		      pcanvas.updateScale(0.95, lastMousePos); // Zoom out by multiplying scale by 0.95
+            }
+          }
+        }
+        return;
+      }
       // ----
 
       final dominantDelta = rawDx.abs() > rawDy.abs() ? rawDx.abs() : rawDy.abs();

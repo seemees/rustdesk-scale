@@ -2791,7 +2791,7 @@ class CanvasModel with ChangeNotifier {
     // final mins = parent.target?.imageModel.minScale ?? 1;
     final maxs = 16.0;
     // final mins = 0.25;
-    var mins = 0.25;
+    var mins = 0.05;
     // final size = parent.target?.canvasModel.getSize() ?? Offset(0, 0);
     final cx = size.width;
     final cy = size.height;
@@ -2833,7 +2833,7 @@ class CanvasModel with ChangeNotifier {
     }
 
     // ++++
-    debugPrint("RUSTDESK_DEBUG: updateScale1 IN -> v=$v | s_old=$s | s_multiplied=$_scale | _xy=$_x x  $_y | focal=${focalPoint.dx} x ${focalPoint.dy}| cxy=$cx x $cy | mxy=$mx x $my | mins=$mins");
+    debugPrint("RUSTDESK_DEBUG: model: updateScale: scalefactor=$v | oldscale=$s | newscale=$_scale | canvasleftxy=$_x x  $_y | mouseposxy=${focalPoint.dx} x ${focalPoint.dy}| canvasxy=$cx x $cy | mediaxy=$mx x $my | minscale=$mins");
     // ----
 
     // ++++
