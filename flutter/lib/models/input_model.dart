@@ -2108,7 +2108,7 @@ class InputModel {
     // ++++
     //final String evtX = evt['x']?.toString() ?? evt['dx']?.toString() ?? 'no_x';
     //final String evtY = evt['y']?.toString() ?? evt['dy']?.toString() ?? 'no_y';
-    debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toInt()} x ${offset.dy.toInt()}");
+    //debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toInt()} x ${offset.dy.toInt()}");
     // ----
 
     final evtToPeer = processEventToPeer(evt, offset,

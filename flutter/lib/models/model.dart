@@ -2793,7 +2793,81 @@ class CanvasModel with ChangeNotifier {
   */
 
   // mobile only
+
   updateScale(double v, Offset focalPoint) {
+    final oldScale = _scale;
+    final oldX = _x;
+    final oldY = _y;
+    final origAdjust = getAdjustY();
+
+    _scale *= v;
+    
+    final maxs = 16.0;
+    var mins = 0.05;
+
+    final rDeskWidth = getDisplayWidth();
+    final rDeskHeight = getDisplayHeight();
+
+    final mediaData = MediaQueryData.fromView(ui.window);
+    final mx = mediaData.size.width;
+    final my = mediaData.size.height;
+    final cx = size.width;
+    final cy = size.height;
+
+    if (cx > 0 && cy > 0 && rDeskWidth > 0 && rDeskHeight > 0) {
+      final scaleToFitWidth = cx / rDeskWidth;
+      final scaleToFitHeight = cy / rDeskHeight;
+      final dynamicMinScale = scaleToFitWidth < scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
+
+      if (dynamicMinScale > mins) {
+        mins = dynamicMinScale;
+      }
+    }
+
+    if (_scale > maxs) _scale = maxs;
+    if (_scale < mins) _scale = mins;
+
+    // ++++
+    final adjust = my - cy; 
+    
+    final double localX = focalPoint.dx;
+    // Hardcoding 27.0 since the window client area tracking starts at Y=27
+    final double localY = focalPoint.dy - 27.0;
+
+    _x = localX - (localX - _x) / s * _scale;
+    _y = localY - (localY - _y) / s * _scale;
+
+    if (_scale <= mins) {
+      _x = 0.0;
+      _y = 0.0; 
+    }
+    // ----
+
+    if (isMobile) {
+      isMobileCanvasChanged = true;
+    }
+
+    final viewW = parent.target?.ffiModel.rect?.width ?? -1.0;
+    final viewH = parent.target?.ffiModel.rect?.height ?? -1.0;
+
+    debugPrint(
+      "RUSTDESK_DEBUG:   model: updateScale: "
+      "mins=$mins adjust=$adjust (orig $origAdjust) | "
+      "canvas_offset (before)=(${oldX.toInt()}, ${oldY.toInt()}) | "
+      "canvas_offset (after)=(${_x.toInt()}, ${_y.toInt()}) | "
+      "canvas_size=${cx.toInt()}x${cy.toInt()} | "
+      "media_size=${mx.toInt()}x${my.toInt()} | "
+      "mousepos=${localX.toInt()}x${localY.toInt()} | "
+      "rDesk_display=${rDeskWidth.toInt()}x${rDeskHeight.toInt()} | "
+      "v=$v | oldScale=$oldScale -> _scale=$_scale"
+    );
+
+    notifyListeners();
+  }
+
+
+  /*
+  updateScale_old5_worked(double v, Offset focalPoint) {
     final s = _scale;
     _scale *= v;
     
@@ -2865,6 +2939,7 @@ class CanvasModel with ChangeNotifier {
 
     notifyListeners();
   }
+  */
 
   /*
   updateScale_old4(double v, Offset focalPoint) {
