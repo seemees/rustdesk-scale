@@ -2834,8 +2834,8 @@ class CanvasModel with ChangeNotifier {
     // Hardcoding 27.0 since the window client area tracking starts at Y=27
     final double localY = focalPoint.dy - 27.0;
 
-    _x = localX - (localX - _x) / s * _scale;
-    _y = localY - (localY - _y) / s * _scale;
+    _x = localX - (localX - _x) / oldScale * _scale;
+    _y = localY - (localY - _y) / oldScale * _scale;
 
     if (_scale <= mins) {
       _x = 0.0;
