@@ -1734,15 +1734,20 @@ class InputModel {
       } else if (dy < 0) {
         dy = accel;
       }
+
       // ++++
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 sendMouse wheel to rust -> dx=$dx dy=$dy");
+      var direction = "-";
+      if (dy>0) {
+        direction = "up";
+      } else {
+        direction = "down";
+      }
+          
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage send wheel to rust $direction");
       // ----
       bind.sessionSendMouse(
           sessionId: sessionId,
           msg: '{"type": "wheel", "x": "$dx", "y": "$dy"}');
-      // ++++
-      //debugPrint("RUSTDESK_DEBUG: onPointerSignalImage3 OUT -> dx=$dx dy=$dy");
-      // ----
     }
   }
 
@@ -2103,7 +2108,7 @@ class InputModel {
     // ++++
     //final String evtX = evt['x']?.toString() ?? evt['dx']?.toString() ?? 'no_x';
     //final String evtY = evt['y']?.toString() ?? evt['dy']?.toString() ?? 'no_y';
-    //debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toStringAsFixed(1)} x ${offset.dy.toStringAsFixed(1)}");
+    debugPrint("RUSTDESK_DEBUG: input_model: handleMouse. Pos: ${offset.dx.toInt()} x ${offset.dy.toInt()}");
     // ----
 
     final evtToPeer = processEventToPeer(evt, offset,

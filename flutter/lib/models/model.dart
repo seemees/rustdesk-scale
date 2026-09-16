@@ -2797,8 +2797,8 @@ class CanvasModel with ChangeNotifier {
     final s = _scale;
     _scale *= v;
     
-    final maxs = 16.0;
     // ++++
+    final maxs = 16.0;
     var mins = 0.05;
 
     final rDeskWidth = getDisplayWidth();
@@ -2810,9 +2810,9 @@ class CanvasModel with ChangeNotifier {
     final cx = size.width;
     final cy = size.height;
 
-    if (mx > 0 && my > 0 && rDeskWidth > 0 && rDeskHeight > 0) {
-      final scaleToFitWidth = mx / rDeskWidth;
-      final scaleToFitHeight = my / rDeskHeight;
+    if (cx > 0 && cy > 0 && rDeskWidth > 0 && rDeskHeight > 0) {
+      final scaleToFitWidth = cx / rDeskWidth;
+      final scaleToFitHeight = cy / rDeskHeight;
       // final dynamicMinScale = scaleToFitWidth > scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
       final dynamicMinScale = scaleToFitWidth < scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
 
@@ -2826,7 +2826,7 @@ class CanvasModel with ChangeNotifier {
     if (_scale < mins) _scale = mins;
 
     //final adjust = getAdjustY();
-    final adjust = my-cy;
+    final adjust = -(my-cy);
     final double localX = focalPoint.dx;
 //    final double localY = focalPoint.dy - adjust;
     final double localY = focalPoint.dy;
@@ -2845,21 +2845,21 @@ class CanvasModel with ChangeNotifier {
     final viewW = parent.target?.ffiModel.rect?.width ?? -1.0;
     final viewH = parent.target?.ffiModel.rect?.height ?? -1.0;
 
-    final hasParentTarget = parent.target != null;
-    final hasImageModel = parent.target?.imageModel != null;
-    final hasCanvasModel = parent.target?.canvasModel != null;
+    // final hasParentTarget = parent.target != null;
+    // final hasImageModel = parent.target?.imageModel != null;
+    // final hasCanvasModel = parent.target?.canvasModel != null;
 
     debugPrint(
       "RUSTDESK_DEBUG:   model: updateScale: "
-      "v=$v | s_old=$s -> s_new=$_scale | "
       "mins=$mins adjust=$adjust | "
-      "canvas_offset=($_x, $_y) | "
-      "focal=${focalPoint.dx}x${focalPoint.dy} | "
-      "mousepos=${localX}x${localY} | "
-      "canvas_size=${cx}x${cy} | "
-      "media_size=${mx}x${my} | "
-      "rDesk_display=${rDeskWidth}x${rDeskHeight} | "
-      "rDesk_view=${viewW}x${viewH}"
+      "canvas_offset=(${_x.toInt()}, ${_y.toInt()}) | "
+      "canvas_size=${cx.toInt()}x${cy.toInt()} | "
+      "media_size=${mx.toInt()}x${my.toInt()} | "
+      // "focal=${focalPoint.dx}x${focalPoint.dy} | "
+      "mousepos=${localX.toInt()}x${localY.toInt()} | "
+      "rDesk_display=${rDeskWidth.toInt()}x${rDeskHeight.toInt()} | "
+      //"rDesk_view=${viewW}x${viewH} | "
+      "v=$v | s_old=$s -> s_new=$_scale"
       // "models_state(target:$hasParentTarget, image:$hasImageModel, canvas:$hasCanvasModel)"
     );
 
