@@ -1654,7 +1654,99 @@ class InputModel {
   /// This is because scroll events don't need relative positioning - they represent
   /// scroll deltas that are independent of cursor position. Games and 3D applications
   /// handle scroll events the same way regardless of mouse mode.
+
   void onPointerSignalImage(PointerSignalEvent e) {
+    if (isViewOnly) return;
+    if (isViewCamera) return;
+    if (e is PointerScrollEvent) {
+      final rawDx = e.scrollDelta.dx;
+      final rawDy = e.scrollDelta.dy;
+
+      // ++++
+      // Используем e.isControlPressed, который зашит в само событие на уровне ОС Windows
+      // final bool systemCtrl = e.isControlPressed;
+      // final bool isCtrlDown = RawKeyboard.instance.keysPressed
+      //       .contains(LogicalKeyboardKey.controlLeft) ||
+      //   RawKeyboard.instance.keysPressed
+      //       .contains(LogicalKeyboardKey.controlRight);
+      
+      //final bool isCtrlDownRaw = RawKeyboard.instance.keysPressed
+      //      .contains(LogicalKeyboardKey.controlLeft);
+      //final bool isCtrlDownButton = (e.buttons & 8) != 0 || (e.buttons & 4) != 0;
+
+
+      //debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage1 x=$rawDx y=$rawDy ctrl_var=$ctrl CtrlRaw=$isCtrlDownRaw CtrlBut=$isCtrlDownButton (${e.buttons}) shift=$shift alt=$alt");
+      //final bool isCtrlDown = isCtrlDownRaw || isCtrlDownButton;
+      final bool isCtrlDown = false;
+      if (isCtrlDown) {
+        final ptrg = parent.target;
+        if (ptrg != null) {
+          final pcanvas = ptrg.canvasModel;
+          if (pcanvas != null) {
+            if (rawDy < 0) {
+              debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 zoom up");
+              pcanvas.updateScale(1.05, lastMousePos); // Zoom in
+            } else if (rawDy > 0) {
+              debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 zoom down");
+              pcanvas.updateScale(0.95, lastMousePos); // Zoom out
+            }
+          }
+        }
+        debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage3 check control end");
+        return; // Гарантированно прерываем функцию, не отправляя скролл в bind
+      }
+      // ----
+
+      final dominantDelta = rawDx.abs() > rawDy.abs() ? rawDx.abs() : rawDy.abs();
+      final isSmooth = dominantDelta < 1;
+      final nowUs = DateTime.now().microsecondsSinceEpoch;
+      final dtUs = _lastWheelTsUs == 0 ? 0 : nowUs - _lastWheelTsUs;
+      _lastWheelTsUs = nowUs;
+      int accel = 1;
+      if (!isSmooth &&
+          dtUs > 0 &&
+          dtUs <= _wheelAccelMediumThresholdUs &&
+          (isWindows || isLinux) &&
+          peerPlatform == kPeerPlatformMacOS) {
+        final velocity = dominantDelta / dtUs;
+        if (velocity >= _wheelBurstVelocityThreshold) {
+          if (dtUs < _wheelAccelFastThresholdUs) {
+            accel = 3;
+          } else {
+            accel = 2;
+          }
+        }
+      }
+      var dx = rawDx.toInt();
+      var dy = rawDy.toInt();
+      if (rawDx.abs() > rawDy.abs()) {
+        dy = 0;
+      } else {
+        dx = 0;
+      }
+      if (dx > 0) {
+        dx = -accel;
+      } else if (dx < 0) {
+        dx = accel;
+      }
+      if (dy > 0) {
+        dy = -accel;
+      } else if (dy < 0) {
+        dy = accel;
+      }
+      // ++++
+      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 sendMouse wheel to rust -> dx=$dx dy=$dy");
+      // ----
+      bind.sessionSendMouse(
+          sessionId: sessionId,
+          msg: '{"type": "wheel", "x": "$dx", "y": "$dy"}');
+      // ++++
+      //debugPrint("RUSTDESK_DEBUG: onPointerSignalImage3 OUT -> dx=$dx dy=$dy");
+      // ----
+    }
+  }
+
+  void onPointerSignalImage_old2(PointerSignalEvent e) {
     if (isViewOnly) return;
     if (isViewCamera) return;
     if (e is PointerScrollEvent) {
@@ -1683,10 +1775,10 @@ class InputModel {
           if (pcanvas != null) {
             if (rawDy < 0) {
               debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 zoom up");
-              pcanvas.updateScale(1.05, lastMousePos); // Zoom in
+              pcanvas.updateScale(1.2, lastMousePos); // Zoom in
             } else if (rawDy > 0) {
               debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 zoom down");
-              pcanvas.updateScale(0.95, lastMousePos); // Zoom out
+              pcanvas.updateScale(0.8, lastMousePos); // Zoom out
             }
           }
         }

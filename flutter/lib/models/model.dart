@@ -2808,8 +2808,9 @@ class CanvasModel with ChangeNotifier {
     if (mx > 0 && my > 0 && rDeskWidth > 0 && rDeskHeight > 0) {
       final scaleToFitWidth = mx / rDeskWidth;
       final scaleToFitHeight = my / rDeskHeight;
-      final dynamicMinScale = scaleToFitWidth > scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
-      
+      // final dynamicMinScale = scaleToFitWidth > scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
+      final dynamicMinScale = scaleToFitWidth < scaleToFitHeight ? scaleToFitWidth : scaleToFitHeight;
+
       if (dynamicMinScale > mins) {
         mins = dynamicMinScale;
       }
@@ -2824,8 +2825,10 @@ class CanvasModel with ChangeNotifier {
     final double localY = focalPoint.dy - adjust;
 
     // ++++
-    _x = localX - (localX - _x) / s * _scale;
-    _y = localY - (localY - _y) / s * _scale;
+    // _x = localX - (localX - _x) / s * _scale;
+    // _y = localY - (localY - _y) / s * _scale;
+    _x = localX - (localX - _x) * s / _scale;
+    _y = localY - (localY - _y) * s / _scale;
     // ----
 
     if (isMobile) {
@@ -2845,6 +2848,7 @@ class CanvasModel with ChangeNotifier {
     debugPrint(
       "RUSTDESK_DEBUG: model: updateScale: "
       "v=$v | s_old=$s -> s_new=$_scale | "
+      "mins=$mins | "
       "canvas_offset=($_x, $_y) | "
       "mouse_window=${focalPoint.dx}x${focalPoint.dy} | "
       "mouse_local=${localX}x${localY} | "
