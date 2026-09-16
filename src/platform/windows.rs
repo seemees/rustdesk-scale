@@ -1924,16 +1924,13 @@ pub fn add_recent_document(path: &str) {
 }
 
 pub fn is_installed() -> bool {
+    // ++++
     /*
-    //+++++++
     let (_, _, _, exe) = get_install_info();
     std::fs::metadata(exe).is_ok()
     */
-    false
-    /*
-    //-------
-    */
-
+    true
+    // ----
 }
 
 pub fn get_reg(name: &str) -> String {
@@ -2366,8 +2363,8 @@ pub fn run_background(exe: &str, arg: &str) -> ResultType<bool> {
 }
 
 pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
+    // ++++
     /*
-    //+++++++
     let wop = wide_string("runas");
     let wexe = wide_string(exe);
     let warg;
@@ -2389,9 +2386,7 @@ pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
     }
     */
     return Ok(true);
-    /*
-    //-------
-    */
+    // ----
 }
 
 pub fn check_super_user_permission() -> ResultType<bool> {
@@ -4179,8 +4174,8 @@ pub fn is_self_service_running() -> bool {
 }
 
 
+// ++++
 /*
-//+++++++
 pub fn is_service_running(service_name: &str) -> bool {
     unsafe {
         let service_name = wide_string(service_name);
@@ -4188,13 +4183,11 @@ pub fn is_service_running(service_name: &str) -> bool {
     }
 }
 */
-
 pub fn is_service_running(service_name: &str) -> bool {
     true
 }
-/*
-//-------
-*/
+// ----
+
 
 pub fn is_x64() -> bool {
     const PROCESSOR_ARCHITECTURE_AMD64: u16 = 9;
