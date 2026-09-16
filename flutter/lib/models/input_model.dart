@@ -1736,14 +1736,14 @@ class InputModel {
       }
 
       // ++++
-      var direction = "-";
-      if (dy>0) {
-        direction = "up";
-      } else {
-        direction = "down";
-      }
-          
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage send wheel to rust $direction");
+      //var direction = "-";
+      //if (dy>0) {
+      //  direction = "up";
+      //} else {
+      //  direction = "down";
+      //}
+      //debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage send wheel to rust $direction");
+
       // ----
       bind.sessionSendMouse(
           sessionId: sessionId,
@@ -1830,7 +1830,7 @@ class InputModel {
         dy = accel;
       }
       // ++++
-      debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 err sendMouse wheel to rust -> dx=$dx dy=$dy");
+      //debugPrint("RUSTDESK_DEBUG: input_model: onPointerSignalImage2 err sendMouse wheel to rust -> dx=$dx dy=$dy");
       // ----
       bind.sessionSendMouse(
           sessionId: sessionId,
