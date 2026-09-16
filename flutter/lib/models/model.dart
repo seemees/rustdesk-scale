@@ -912,17 +912,20 @@ class FfiModel with ChangeNotifier {
 
       final double oldScale = parent.target?.canvasModel._scale ?? 1.0;
 
-      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox1. Custom_zoom evt $text. Scale: $oldScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
+      //debugPrint("RUSTDESK_DEBUG: model: handleMsgBox1. Custom_zoom evt $text. Scale: $oldScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
       // 3. Invoke updateScale with proper multiplier step and focal point
+      final double scaleSpeed = 0.2;
+      final double scaleUp = 1.0 + scaleSpeed;
+      final double scaleDown = 1.0 - scaleSpeed;
       if (text == 'up') {
-        parent.target?.canvasModel.updateScale(1.05, currentMousePos); // Zoom in by multiplying scale by 1.05
+        parent.target?.canvasModel.updateScale(scaleUp, currentMousePos); // Zoom in by multiplying scale by 1.05
       } else if (text == 'down') {
-        parent.target?.canvasModel.updateScale(0.95, currentMousePos); // Zoom out by multiplying scale by 0.95
+        parent.target?.canvasModel.updateScale(scaleDown, currentMousePos); // Zoom out by multiplying scale by 0.95
       }
       
       final double newScale = parent.target?.canvasModel._scale ?? 1.0;
       //debugPrint("RUSTDESK_DEBUG: model: handleMsgBox. Custom_zoom evt $text ($call) state=$state. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x {currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
-      debugPrint("RUSTDESK_DEBUG: model: handleMsgBox2. Custom_zoom evt $text. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
+      //debugPrint("RUSTDESK_DEBUG: model: handleMsgBox2. Custom_zoom evt $text. Scale: Old: $oldScale -> New: $newScale. Pos: ${currentMousePos.dx} x ${currentMousePos.dy}. Screen: $displayWidth x $displayHeight");
       return; // Stop execution so no dialog window pops up
     }
     // -----
@@ -2804,6 +2807,8 @@ class CanvasModel with ChangeNotifier {
     final mediaData = MediaQueryData.fromView(ui.window);
     final mx = mediaData.size.width;
     final my = mediaData.size.height;
+    final cx = size.width;
+    final cy = size.height;
 
     if (mx > 0 && my > 0 && rDeskWidth > 0 && rDeskHeight > 0) {
       final scaleToFitWidth = mx / rDeskWidth;
@@ -2820,24 +2825,23 @@ class CanvasModel with ChangeNotifier {
     if (_scale > maxs) _scale = maxs;
     if (_scale < mins) _scale = mins;
 
-    final adjust = getAdjustY();
+    //final adjust = getAdjustY();
+    final adjust = my-cy;
     final double localX = focalPoint.dx;
-    final double localY = focalPoint.dy - adjust;
+//    final double localY = focalPoint.dy - adjust;
+    final double localY = focalPoint.dy;
 
     // ++++
-    // _x = localX - (localX - _x) / s * _scale;
-    // _y = localY - (localY - _y) / s * _scale;
-    _x = localX - (localX - _x) * s / _scale;
-    _y = localY - (localY - _y) * s / _scale;
+    _x = localX - (localX - _x) / s * _scale;
+    _y = localY - (localY - _y) / s * _scale;
+    //_x = localX - (localX - _x) * s / _scale;
+    //_y = localY - (localY - _y) * s / _scale;
     // ----
 
     if (isMobile) {
       isMobileCanvasChanged = true;
     }
 
-    final cx = size.width;
-    final cy = size.height;
-    
     final viewW = parent.target?.ffiModel.rect?.width ?? -1.0;
     final viewH = parent.target?.ffiModel.rect?.height ?? -1.0;
 
@@ -2846,18 +2850,17 @@ class CanvasModel with ChangeNotifier {
     final hasCanvasModel = parent.target?.canvasModel != null;
 
     debugPrint(
-      "RUSTDESK_DEBUG: model: updateScale: "
+      "RUSTDESK_DEBUG:   model: updateScale: "
       "v=$v | s_old=$s -> s_new=$_scale | "
-      "mins=$mins | "
+      "mins=$mins adjust=$adjust | "
       "canvas_offset=($_x, $_y) | "
-      "mouse_window=${focalPoint.dx}x${focalPoint.dy} | "
-      "mouse_local=${localX}x${localY} | "
-      "adjust=$adjust | "
+      "focal=${focalPoint.dx}x${focalPoint.dy} | "
+      "mousepos=${localX}x${localY} | "
       "canvas_size=${cx}x${cy} | "
       "media_size=${mx}x${my} | "
       "rDesk_display=${rDeskWidth}x${rDeskHeight} | "
-      "rDesk_view=${viewW}x${viewH} | "
-      "models_state(target:$hasParentTarget, image:$hasImageModel, canvas:$hasCanvasModel)"
+      "rDesk_view=${viewW}x${viewH}"
+      // "models_state(target:$hasParentTarget, image:$hasImageModel, canvas:$hasCanvasModel)"
     );
 
     notifyListeners();
