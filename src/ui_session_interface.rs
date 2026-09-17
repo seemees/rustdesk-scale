@@ -1486,10 +1486,16 @@ impl<T: InvokeUiSession> Session<T> {
     }
 
     pub fn elevate_direct(&self) {
+        // ++++
+        log::info!("RUSTDESK_DEBUG: ui_session_interface.elevate_direct");
+        // ----
         self.send(Data::ElevateDirect);
     }
 
     pub fn elevate_with_logon(&self, username: String, password: String) {
+        // ++++
+        log::info!("RUSTDESK_DEBUG: ui_session_interface.elevate_with_logon");
+        // ----
         self.send(Data::ElevateWithLogon(username, password));
     }
 

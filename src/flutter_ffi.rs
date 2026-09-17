@@ -899,12 +899,18 @@ pub fn session_rename_file(
 
 pub fn session_elevate_direct(session_id: SessionID) {
     if let Some(session) = sessions::get_session_by_session_id(&session_id) {
+        // ++++
+        log::info!("RUSTDESK_DEBUG: flutter_ffi.session_elevate_direct session_id={}", session_id);
+        // ----
         session.elevate_direct();
     }
 }
 
 pub fn session_elevate_with_logon(session_id: SessionID, username: String, password: String) {
     if let Some(session) = sessions::get_session_by_session_id(&session_id) {
+        // ++++
+        log::info!("RUSTDESK_DEBUG: flutter_ffi.session_elevate_with_logon session_id={}", session_id);
+        // ----
         session.elevate_with_logon(username, password);
     }
 }
