@@ -1015,8 +1015,10 @@ impl<T: InvokeUiSession> Remote<T> {
                 self.update_record_state();
             }
             // +++++
-            /*
             Data::ElevateDirect => {
+		        // ++++
+		        log::info!("RUSTDESK_DEBUG: Data::ElevateDirect");
+		        // ----
                 let mut request = ElevationRequest::new();
                 request.set_direct(true);
                 let mut misc = Misc::new();
@@ -1027,6 +1029,9 @@ impl<T: InvokeUiSession> Remote<T> {
                 self.elevation_requested = true;
             }
             Data::ElevateWithLogon(username, password) => {
+		        // ++++
+		        log::info!("RUSTDESK_DEBUG: Data::ElevateWithLogon username={} password={}",username,password);
+		        // ----
                 let mut request = ElevationRequest::new();
                 request.set_logon(ElevationRequestWithLogon {
                     username,
@@ -1040,7 +1045,7 @@ impl<T: InvokeUiSession> Remote<T> {
                 allow_err!(peer.send(&msg).await);
                 self.elevation_requested = true;
             }
-            */
+            /*
             Data::ElevateDirect => {
                 // FORK MOD: Disable UAC request and immediate fallback to current user session
                 log::info!("RUSTDESK_DEBUG: handle_msg_from_ui Bypassing ElevateDirect on client side to open files immediately.");
@@ -1059,6 +1064,7 @@ impl<T: InvokeUiSession> Remote<T> {
                 log::info!("RUSTDESK_DEBUG: handle_msg_from_ui Bypassing ElevateWithLogon on client side.");
                 self.elevation_requested = false;
             }
+            */
             // FORK MOD: Process our independent zoom event and route it to Flutter UI via msgbox pipeline
             Data::CustomZoom(is_zoom_in) => {
                 //log::info!("RUSTDESK_DEBUG CZ: handle_msg_from_ui Processing local CustomZoom event. Is Zoom In: {}", is_zoom_in);
@@ -1994,6 +2000,9 @@ impl<T: InvokeUiSession> Remote<T> {
                         }
                     }
                     Some(misc::Union::Uac(uac)) => {
+				        // ++++
+				        log::info!("RUSTDESK_DEBUG: Union::UAC uac={}", uac);
+				        // ----
                         let keyboard = self.handler.server_keyboard_enabled.read().unwrap().clone();
                         #[cfg(feature = "flutter")]
                         {
@@ -2027,6 +2036,10 @@ impl<T: InvokeUiSession> Remote<T> {
                         }
                     }
                     Some(misc::Union::ForegroundWindowElevated(elevated)) => {
+				        // ++++
+				        log::info!("RUSTDESK_DEBUG: Union::ForegroundWindowElevated elevated={}", elevated);
+				        // ----
+
                         let keyboard = self.handler.server_keyboard_enabled.read().unwrap().clone();
                         #[cfg(feature = "flutter")]
                         {
@@ -2060,6 +2073,9 @@ impl<T: InvokeUiSession> Remote<T> {
                         }
                     }
                     Some(misc::Union::ElevationResponse(err)) => {
+				        // ++++
+				        log::info!("RUSTDESK_DEBUG: Union::ElevationResponse err={}", err);
+				        // ----
                         if err.is_empty() {
                             self.handler.msgbox("wait-uac", "", "", "");
                         } else {
@@ -2069,6 +2085,9 @@ impl<T: InvokeUiSession> Remote<T> {
                         }
                     }
                     Some(misc::Union::PortableServiceRunning(b)) => {
+				        // ++++
+				        log::info!("RUSTDESK_DEBUG: Union::PortableServiceRunning b={}", b);
+				        // ----
                         self.handler.portable_service_running(b);
                         if self.elevation_requested && b {
                             self.handler.msgbox(
