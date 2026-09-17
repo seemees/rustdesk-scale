@@ -2239,10 +2239,16 @@ pub fn cm_switch_permission(conn_id: i32, name: String, enabled: bool) {
 }
 
 pub fn cm_can_elevate() -> SyncReturn<bool> {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: flutter_ffi.cm_can_elevate can_elevate={}", crate::ui_cm_interface::can_elevate());
+    // ----
     SyncReturn(crate::ui_cm_interface::can_elevate())
 }
 
 pub fn cm_elevate_portable(conn_id: i32) {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: flutter_ffi.cm_elevate_portable conn_id={}", conn_id);
+    // ----
     #[cfg(not(any(target_os = "ios")))]
     crate::ui_cm_interface::elevate_portable(conn_id);
 }

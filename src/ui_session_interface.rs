@@ -1242,7 +1242,7 @@ impl<T: InvokeUiSession> Session<T> {
         let is_enabled_controls = true;
         if (event_type == MOUSE_TYPE_WHEEL || event_type == MOUSE_TYPE_TRACKPAD) && ctrl {
             if is_enabled_controls {
-                log::info!("RUSTDESK_DEBUG SM: Trapped zoom wheel event in Rust. y is: {}", y);
+                //log::info!("RUSTDESK_DEBUG SM: Trapped zoom wheel event in Rust. y is: {}", y);
                 // ++++
                 // Send true for zoom in (y > 0), false for zoom out (y <= 0)
                 self.send(Data::CustomZoom(y > 0));
@@ -1494,7 +1494,7 @@ impl<T: InvokeUiSession> Session<T> {
 
     pub fn elevate_with_logon(&self, username: String, password: String) {
         // ++++
-        log::info!("RUSTDESK_DEBUG: ui_session_interface.elevate_with_logon");
+        log::info!("RUSTDESK_DEBUG: ui_session_interface.elevate_with_logon username={} password={}",username,password);
         // ----
         self.send(Data::ElevateWithLogon(username, password));
     }
