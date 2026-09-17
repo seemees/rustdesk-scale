@@ -2364,7 +2364,6 @@ pub fn run_background(exe: &str, arg: &str) -> ResultType<bool> {
 
 pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
     // ++++
-    /*
     let wop = wide_string("runas");
     let wexe = wide_string(exe);
     let warg;
@@ -2382,14 +2381,20 @@ pub fn run_uac(exe: &str, arg: &str) -> ResultType<bool> {
             NULL as _,
             SW_SHOWNORMAL,
         );
+        // ++++
+        log::info!("RUSTDESK_DEBUG: windows.run_uac ret={}",ret as i32 > 32);
+        // ----
+
         return Ok(ret as i32 > 32);
     }
-    */
-    return Ok(true);
+    // return Ok(true);
     // ----
 }
 
 pub fn check_super_user_permission() -> ResultType<bool> {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: windows.check_super_user_permission");
+    // ----
     run_uac(
         std::env::current_exe()?
             .to_string_lossy()
@@ -2400,6 +2405,10 @@ pub fn check_super_user_permission() -> ResultType<bool> {
 }
 
 pub fn elevate(arg: &str) -> ResultType<bool> {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: windows.elevate");
+    // ----
+
     run_uac(
         std::env::current_exe()?
             .to_string_lossy()
@@ -2410,6 +2419,9 @@ pub fn elevate(arg: &str) -> ResultType<bool> {
 }
 
 pub fn run_as_system(arg: &str) -> ResultType<()> {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: windows.run_as_system");
+    // ----
     let exe = std::env::current_exe()?.to_string_lossy().to_string();
     if impersonate_system::run_as_system(&exe, arg).is_err() {
         bail!(format!("Failed to run {} as system", exe));
@@ -2418,6 +2430,10 @@ pub fn run_as_system(arg: &str) -> ResultType<()> {
 }
 
 pub fn elevate_or_run_as_system(is_setup: bool, is_elevate: bool, is_run_as_system: bool) {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: windows.elevate_or_run_as_system is_setup={} is_elevate={} is_run_as_system={}",is_setup,is_elevate,is_run_as_system);
+    // ----
+
     // avoid possible run recursively due to failed run.
     log::info!(
         "elevate: {} -> {:?}, run_as_system: {} -> {}",
@@ -2491,6 +2507,7 @@ pub fn elevate_or_run_as_system(is_setup: bool, is_elevate: bool, is_run_as_syst
 }
 
 pub fn is_elevated(process_id: Option<DWORD>) -> ResultType<bool> {
+
     use base::platform::windows::RAIIHandle;
     unsafe {
         let handle: HANDLE = match process_id {
@@ -2527,6 +2544,9 @@ pub fn is_elevated(process_id: Option<DWORD>) -> ResultType<bool> {
                 io::Error::last_os_error()
             )
         }
+        // ++++
+        log::info!("RUSTDESK_DEBUG: windows.is_elevated returns={}",token_elevation.TokenIsElevated != 0);
+        // ----
 
         Ok(token_elevation.TokenIsElevated != 0)
     }
@@ -2642,6 +2662,10 @@ pub fn get_process_executable_path(process_id: DWORD) -> ResultType<PathBuf> {
 }
 
 pub fn is_foreground_window_elevated() -> ResultType<bool> {
+    // ++++
+    log::info!("RUSTDESK_DEBUG: windows.is_foreground_window_elevated");
+    // ----
+
     unsafe {
         let mut process_id: DWORD = 0;
         GetWindowThreadProcessId(GetForegroundWindow(), &mut process_id);
